@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <style>
+        body {
+            background-color: #f3e5f5; /* Light lavender background */
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #ffffff; /* White background for the form */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin-bottom: 20px; /* Add margin bottom for spacing between forms */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #6a1b9a; /* Medium purple */
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: calc(100% - 22px); /* Adjust width for select to match input width */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #b39ddb; /* Light purple border */
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #7b1fa2; /* Medium purple */
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #4a148c; /* Dark purple on hover */
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="/save_project">
+        <label for="project_name">Project Name:</label>
+        <input type="text" id="project_name" name="project_name" required>
+    
+        <label for="share_with">Share with:</label>
+        <div id="share_with">
+            {% for user in users %}
+                <div class="checkbox-container">
+                    <input type="checkbox" id="user_{{ user.username }}" name="share_with" value="{{ user.username }}">
+                    <label for="user_{{ user.username }}">{{ user.username }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    
+        <input type="submit" value="Save Project">
+    </form>
+    
+    <form method="get" action="/skip_project">
+        <input type="submit" value="Skip">
+    </form>
+</body>
+</html>

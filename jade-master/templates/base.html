@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>Todo App</title>
+  </head>
+
+  <body>
+    <div class="container">
+        <h1 class="text-black text-uppercase text-center my-4">Todo App</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-white">
+                    <div class="card-body">                        
+                
+                        <!-- Todo Input -->                        
+                        <form action="/todos/create" method="POST">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" class="form-control" name="title" placeholder="Add Todo...">
+                                <br>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                
+                        <hr>
+                
+                        <!-- Todo List -->                
+                        {% for todo in todos %}
+                            <div class="card-body">
+                                
+                                <p class="h4">{{ todo.title }}</p>
+                    
+                                {% if todo.completed == False %}
+                                    <span class="badge badge-secondary">Incomplete</span>
+                                {% else %}
+                                    <span class="badge badge-success">Complete</span>
+                                {% endif %} 
+                                <a href="/todos/update/{{ todo.id }}"><button type="button" class="btn btn-primary btn-sm">Edit</button></a>
+                                <a href="/todos/delete/{{ todo.id }}"><button type="button" class="btn btn-danger btn-sm">Delete</button></a>
+                                <hr>
+                            </div>                
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>    
+
+    <!-- Optional JavaScript -->
+  </body>
+</html>
