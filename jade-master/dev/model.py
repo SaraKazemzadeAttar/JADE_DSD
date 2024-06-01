@@ -6,7 +6,7 @@
 
 # imports --------------------------------------------
 
-from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort , g 
+from flask import Flask , g 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import sqlite3, os
@@ -28,8 +28,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-
-
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -42,7 +40,6 @@ def close_db(e=None):
     
     if db is not None:
         db.close()
-        
         
 # database structures --------------------------------------
 class User(db.Model):
@@ -68,44 +65,22 @@ class SharingProject(db.Model):
 
     
 def get_user_value(username, key):
-    conn = get_db()
-    cursor = conn.cursor()
+    value = User.query.filter_by(username=username , key=key).first()
+    db.session.add(value)
+    db.session.commit
+    return value
 
-    cursor.execute('''
-    SELECT value
-    FROM   user
-    WHERE 
-        username = ? AND
-        key      = ?
-    ''', (username, key))
-    result = cursor.fetchone()
-
-    cursor.close()
-    close_db()    
-    return result
-
-def update_user_value(username, key, value):
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-    UPDATE user
-    SET 
-        key = ?,
-        value = ?
-    WHERE username = ?
-''', (key, value, username))
-    cursor.commit()
-    close_db()    
+def update_user_value(un, key, value):
+    updated_user = User.query.filter_by(username=un).first()
+    if updated_user:
+        setattr(updated_user, key, value)
+        db.session.commit()
 
     
 def get_user(username):
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
-    existing_user = cursor.fetchone()
-    close_db()
-    
+    existing_user = User(username=username)
+    db.session.add(existing_user)
+    db.session.commit()
     return existing_user
 
 def create_user(username, password):
@@ -115,19 +90,9 @@ def create_user(username, password):
     
     
 def get_user_by_password(username, password):
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-                    SELECT * 
-                    FROM user 
-                    WHERE 
-                        username = ? AND 
-                        password = ?
-                    ''', (username, password))
-    
-    user = cursor.fetchone()
-    cursor.close()
-    close_db()
+    user = User(username=username, password=password)
+    db.session.add(user)
+    db.session.commit()
     return user 
 
 def create_project(project_name, owner_user_id):

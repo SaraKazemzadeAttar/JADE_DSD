@@ -1,8 +1,5 @@
 # imports --------------------------------------------
 from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort , g 
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-import sqlite3, os
 
 import model as m
 from model import *
@@ -133,12 +130,11 @@ def save_project():
             create_project_with_subscribers(project_name,owner_user_id,sub_user_id)
     return 'Project saved successfully!'
 
-
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
     return redirect(url_for('jade'))
 
-
+     
 @app.route('/jade.html')
 def jade():
     username = request.cookies.get('username')
