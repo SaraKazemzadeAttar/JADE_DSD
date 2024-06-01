@@ -6,8 +6,9 @@
 
 # imports --------------------------------------------
 
-from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort , g 
+from flask import g 
 from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy.session import Session
 from flask_migrate import Migrate
 import sqlite3, os
 from pathlib import Path
@@ -45,6 +46,7 @@ def close_db(e=None):
         
         
 # database structures --------------------------------------
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -58,13 +60,6 @@ class SharingProject(db.Model):
     owner_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is sharing
     subscriber_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is shared
     project_name = db.Column(db.String(100), nullable=False)
-
-        
-# template  
-# def ...(username, password):
-#     conn = get_db()
-#     cursor = conn.cursor()
-#     close_db()
 
     
 def get_user_value(username, key):
@@ -87,36 +82,33 @@ def get_user_value(username, key):
 def update_user_value(username, key, value):
     conn = get_db()
     cursor = conn.cursor()
+    
     cursor.execute('''
     UPDATE user
     SET 
         key = ?,
         value = ?
     WHERE username = ?
-''', (key, value, username))
-    cursor.commit()
+    ''', (key, value, username))
+
+    conn.commit()
     close_db()    
 
-    
 def get_user(username):
     conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
     existing_user = cursor.fetchone()
+
+    cursor.close()
     close_db()
-    
     return existing_user
 
-def create_user(username, password):
-    new_project = User(username=username, password=password)
-    db.session.add(new_project)
-    db.session.commit()
-    
-    
 def get_user_by_password(username, password):
     conn = get_db()
     cursor = conn.cursor()
+
     cursor.execute('''
                     SELECT * 
                     FROM user 
@@ -125,18 +117,29 @@ def get_user_by_password(username, password):
                         password = ?
                     ''', (username, password))
     
+
     user = cursor.fetchone()
+
     cursor.close()
     close_db()
+
     return user 
 
-def create_project(project_name, owner_user_id):
-    project = SharingProject(project_name=project_name, owner_user_id=owner_user_id)
-    db.session.add(project)
-    db.session.commit()
 
+def create_user(username, password):
+    with Session(db) as ss:
+        new_project = User(username=username, password=password)
+        ss.add(new_project)
+        ss.commit()
+    
+def create_project(project_name, owner_user_id):
+    with Session(db) as ss:
+        project = SharingProject(project_name=project_name, owner_user_id=owner_user_id)
+        ss.add(project)
+        ss.commit()
 
 def create_project_with_subscribers(project_name, owner_user_id, sub_id):
-    project = SharingProject(project_name=project_name, owner_user_id=owner_user_id , subscriber_id = sub_id)
-    db.session.add(project)
-    db.session.commit()
+    with Session(db) as ss:
+        project = SharingProject(project_name=project_name, owner_user_id=owner_user_id , subscriber_id = sub_id)
+        ss.add(project)
+        ss.commit()
