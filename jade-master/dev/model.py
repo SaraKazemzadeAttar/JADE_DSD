@@ -40,7 +40,7 @@ from contextlib import contextmanager
 @contextmanager
 def borrowDB():
     connection = get_conn()
-    cursor = db.cursor()
+    cursor = connection.cursor()
  
     try:
         yield (connection, cursor)

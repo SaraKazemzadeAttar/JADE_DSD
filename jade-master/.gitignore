@@ -3,3 +3,5 @@ libraries/*@*
 *.pyc
 *~
 
+__pycache__
+/dev/migrations
