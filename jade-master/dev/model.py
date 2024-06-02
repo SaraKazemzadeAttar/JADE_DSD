@@ -119,15 +119,11 @@ def create_user(username, password):
         ss.add(User(username=username, password=password))
     
 def create_project(project_name, owner_user_id):
-    # Assuming you have a function to handle database session
     with borrowDbSession() as ss:
-        new_project = SharingProject(project_name=project_name, owner_user_id=owner_user_id)
-        ss.add(new_project)
-        ss.commit()
+        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id))
 
-def create_project_with_subscribers(project_name, owner_user_id, subscriber_id):
+
+def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id):
     with borrowDbSession() as ss:
-        # Assuming SharingProjectSubscribers is the model for project subscribers
-        new_subscription = SharingProjectSubscribers(project_name=project_name, owner_user_id=owner_user_id, subscriber_id=subscriber_id)
-        ss.add(new_subscription)
-        ss.commit()
+        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
+
