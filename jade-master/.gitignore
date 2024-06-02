@@ -5,3 +5,5 @@ libraries/*@*
 
 __pycache__
 /dev/migrations
+
+*.db
