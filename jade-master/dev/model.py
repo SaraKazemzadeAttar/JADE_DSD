@@ -28,22 +28,35 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# ---------------------------------
 
+def get_conn():
+    conn = sqlite3.connect(DATABASE_PATH)
+    conn.execute('PRAGMA foreign_keys = ON')  # Enable foreign key support
+    return conn
 
+from contextlib import contextmanager
 
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE_PATH)
-        db.execute('PRAGMA foreign_keys = ON')  # Enable foreign key support
-    return db
+@contextmanager
+def borrowDB():
+    connection = get_conn()
+    cursor = db.cursor()
+ 
+    try:
+        yield (connection, cursor)
+        connection.commit()
 
-def close_db(e=None):
-    db = g.pop('db', None)
-    
-    if db is not None:
-        db.close()
-        
+    finally:
+        connection.close()
+
+@contextmanager
+def borrowDbSession():
+    with Session(db) as session:
+        try:
+            yield session
+        finally:
+            session.commit()
+
         
 # database structures --------------------------------------
 
@@ -63,83 +76,52 @@ class SharingProject(db.Model):
 
     
 def get_user_value(username, key):
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute('''
-    SELECT value
-    FROM   user
-    WHERE 
-        username = ? AND
-        key      = ?
-    ''', (username, key))
-    result = cursor.fetchone()
-
-    cursor.close()
-    close_db()    
-    return result
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+            SELECT value
+            FROM   user
+            WHERE 
+                username = ? AND
+                key      = ?
+            ''', (username, key))
+        return cursor.fetchone()
 
 def update_user_value(username, key, value):
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-    UPDATE user
-    SET 
-        key = ?,
-        value = ?
-    WHERE username = ?
-    ''', (key, value, username))
-
-    conn.commit()
-    close_db()    
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+            UPDATE user
+            SET 
+                key = ?,
+                value = ?
+            WHERE username = ?
+            ''', (key, value, username))
 
 def get_user(username):
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
-    existing_user = cursor.fetchone()
-
-    cursor.close()
-    close_db()
-    return existing_user
+    with borrowDB() as (conn, cursor):
+        cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
+        return cursor.fetchone()
 
 def get_user_by_password(username, password):
-    conn = get_db()
-    cursor = conn.cursor()
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+                SELECT * 
+                FROM user 
+                WHERE 
+                    username = ? AND 
+                    password = ?
+                ''', (username, password))
 
-    cursor.execute('''
-                    SELECT * 
-                    FROM user 
-                    WHERE 
-                        username = ? AND 
-                        password = ?
-                    ''', (username, password))
-    
-
-    user = cursor.fetchone()
-
-    cursor.close()
-    close_db()
-
-    return user 
+        return  cursor.fetchone()
 
 
 def create_user(username, password):
-    with Session(db) as ss:
-        new_project = User(username=username, password=password)
-        ss.add(new_project)
-        ss.commit()
+    with borrowDbSession() as ss:
+        ss.add(User(username=username, password=password))
     
 def create_project(project_name, owner_user_id):
-    with Session(db) as ss:
-        project = SharingProject(project_name=project_name, owner_user_id=owner_user_id)
-        ss.add(project)
-        ss.commit()
+    with borrowDbSession() as ss:
+        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id))
 
 def create_project_with_subscribers(project_name, owner_user_id, sub_id):
-    with Session(db) as ss:
-        project = SharingProject(project_name=project_name, owner_user_id=owner_user_id , subscriber_id = sub_id)
-        ss.add(project)
-        ss.commit()
+    with borrowDbSession() as ss:
+        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id , subscriber_id = sub_id))
