@@ -86,20 +86,13 @@ def new_project():
         user = User.query.filter_by(username=username).first()
 
         if user:
-            new_project = SharingProject(project_name=project_name, owner_user_id=user.id)
-
             selected_users = request.form.getlist('share_with')
-
             subscribers = User.query.filter(User.username.in_(selected_users)).all()
 
-            db.session.add(new_project)
-            db.session.commit()
+            create_project(project_name, user.id)
 
-            # Save the subscribers to the database
             for subscriber in subscribers:
-                new_subscription = SharingProject(owner_user_id=user.id, subscriber_user_id=subscriber.id, project_name=project_name)
-                db.session.add(new_subscription)
-            db.session.commit()
+                create_project_with_subscribers(project_name, user.id, subscriber.id)
 
             resp = make_response(redirect(url_for('jade')))
             resp.set_cookie('project_name', project_name)
@@ -128,6 +121,7 @@ def save_project():
         if result:
             sub_user_id = result[0]
             create_project_with_subscribers(project_name,owner_user_id,sub_user_id)
+
     return 'Project saved successfully!'
 
 @app.route('/skip_project', methods=['GET'])
