@@ -73,7 +73,9 @@ def login():
 def load_proj():
     if request.cookies.get('username'):
         users = User.query.all()
-        return render_template('save_project.html', users=users)
+        username = request.cookies.get('username')
+        return render_template("save_project.html", users=users, current_user=username)
+    
     else:
         return redirect(url_for('login'))
 

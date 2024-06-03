@@ -122,6 +122,8 @@ def create_project(project_name, owner_user_id):
     with borrowDbSession() as ss:
         ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id))
 
-def create_project_with_subscribers(project_name, owner_user_id, sub_id):
+
+def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id):
     with borrowDbSession() as ss:
-        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id , subscriber_id = sub_id))
+        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
+
