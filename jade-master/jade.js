@@ -313,14 +313,26 @@ jade_defs.top_level = function(jade) {
         const project_name = getCookieValue('project_name');
         
 
-        let edit = '/user/' + cookieValue;
-        edit = '/user/' + cookieValue + '/' + project_name;
-        const mname = edit.split('.');
-        this.edit(mname[0]);
-        if (mname.length > 1) {
-            this.show(mname[1]);
-        }
-        
+        if (project_name!=null){
+            let edit = '/user/' + cookieValue;
+            edit = '/user/' + cookieValue + '/' + project_name;
+            const mname = edit.split('.');
+            this.edit(mname[0]);
+            if (mname.length > 1) {
+                this.show(mname[1]);
+            }
+            }
+            else{
+            let edit = '/user/' + cookieValue;
+            edit = '/user/' + cookieValue ;
+            const mname = edit.split('.');
+            this.edit(mname[0]);
+            if (mname.length > 1) {
+                this.show(mname[1]);
+            }
+            }  
+
+
         
     };
 

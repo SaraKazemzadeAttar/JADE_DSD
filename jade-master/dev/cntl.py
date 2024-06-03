@@ -111,7 +111,10 @@ def new_project():
 
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
-    return redirect(url_for('jade'))
+    resp = make_response(redirect(url_for('jade')))
+    # Set the 'project_name' cookie to expire immediately to effectively delete it
+    resp.set_cookie('project_name', '', max_age=0)
+    return resp
 
 @app.route('/jade.html')
 def jade():
