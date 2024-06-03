@@ -66,7 +66,6 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     key = db.Column(db.Text, nullable=True)
     value = db.Column(db.Text, nullable=True)
-    completed = db.Column(db.Boolean, default=False)
 
 class SharingProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -127,3 +126,11 @@ def create_project_with_subscribers(project_name, owner_user_id, subscriber_user
     with borrowDbSession() as ss:
         ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
 
+def update_value_of_subscriber(value ,subscriber_user_id):
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+            UPDATE user
+            SET 
+                value = ?
+            WHERE id = ?
+            ''', ( value, subscriber_user_id))

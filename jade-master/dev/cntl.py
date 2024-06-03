@@ -94,10 +94,10 @@ def new_project():
             create_project(project_name, user.id)
             selected_users = request.form.getlist('share_with')
             subscribers = User.query.filter(User.username.in_(selected_users)).all()
-
             for subscriber in subscribers:
                 create_project_with_subscribers(project_name, user.id, subscriber.id)
-
+                # ???!!! does not workoing
+                # update_value_of_subscriber(subscriber.value , subscriber.id)
             resp = make_response(redirect(url_for('jade')))
             resp.set_cookie('project_name', project_name)
             return resp
@@ -110,7 +110,6 @@ def new_project():
 def skip_project():
     return redirect(url_for('jade'))
 
-     
 @app.route('/jade.html')
 def jade():
     username = request.cookies.get('username')
