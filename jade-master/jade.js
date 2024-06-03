@@ -385,7 +385,7 @@ jade_defs.top_level = function(jade) {
         this.refresh();  // tell each tab which module we're editing
 
         // save any changes to the server when we change what we're editing
-        jade.model.save_modules();
+        jade.model.save_modules(true);
     };
 
     // if underlying library/module is reloaded, refresh each tab
