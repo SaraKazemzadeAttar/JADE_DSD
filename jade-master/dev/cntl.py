@@ -104,28 +104,6 @@ def new_project():
     else:
         return "No project name provided.", 400
 
-
-@app.route('/save_project', methods=['POST'])
-def save_project():
-    share_with = request.form.getlist('share_with')
-    project_name = request.form['project_name']
-    username = request.cookies.get('username')
-
-    result = get_user(username)
-    if result:
-        owner_user_id = result[0]
-    else:
-        return 'User not found.'
-
-    create_project(project_name, owner_user_id)
-    for follower_username in share_with:
-        result = get_user(follower_username)
-        if result:
-            sub_user_id = result[0]
-            create_project_with_subscribers(project_name,owner_user_id,sub_user_id)
-
-    return 'Project saved successfully!'
-
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
     return redirect(url_for('jade'))
