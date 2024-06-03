@@ -1,9 +1,12 @@
 # imports --------------------------------------------
 from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort , g 
+from json import loads
 
 import model as m
 from model import *
 from main import app
+
+jsonfile = 'pure_labs.json'
 
 # web routes  --------------------------------------------
 
@@ -27,7 +30,7 @@ def handle_post():
         if result := get_user_value(username, key):
             response = result[0]
         else:
-            response = '{}'
+            response = loads(loads(jsonfile))
     else:
         update_user_value(username, key, value)
         response = value
@@ -96,8 +99,7 @@ def new_project():
             subscribers = User.query.filter(User.username.in_(selected_users)).all()
             for subscriber in subscribers:
                 create_project_with_subscribers(project_name, user.id, subscriber.id)
-                # ???!!! does not workoing
-                # update_value_of_subscriber(subscriber.value , subscriber.id)
+                handle_post()
             resp = make_response(redirect(url_for('jade')))
             resp.set_cookie('project_name', project_name)
             return resp
