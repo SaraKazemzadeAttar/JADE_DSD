@@ -38,24 +38,25 @@ def handle_post():
 def index():
     return render_template('login.html')
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
+@app.route('/signup', methods=['POST'])
+def signup_POSTReq():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        existing_user = m.get_user(username)
+        existing_user = get_user(username)
         if existing_user:
             return "username already exists!"
         else:
             create_user(username, password)
             return redirect(url_for('login'))
 
+
+@app.route('/signup', methods=['GET'])
+def signup():
     return render_template('signup.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
+@app.route('/login', methods=['POST'])
+def login_POSTReq():
         username = request.form['username']
         password = request.form['password']
 
@@ -67,6 +68,8 @@ def login():
         else:
             return "Invalid credentials! , Correct your password "
 
+@app.route('/login', methods=['GET'])
+def login():
     return render_template('login.html')
 
 @app.route('/save_project', methods=['GET'])
@@ -88,10 +91,9 @@ def new_project():
         user = User.query.filter_by(username=username).first()
 
         if user:
+            create_project(project_name, user.id)
             selected_users = request.form.getlist('share_with')
             subscribers = User.query.filter(User.username.in_(selected_users)).all()
-
-            create_project(project_name, user.id)
 
             for subscriber in subscribers:
                 create_project_with_subscribers(project_name, user.id, subscriber.id)
