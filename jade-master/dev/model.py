@@ -12,6 +12,8 @@ from flask_sqlalchemy.session import Session
 from flask_migrate import Migrate
 import sqlite3, os
 from pathlib import Path
+from json import loads, dumps
+from pprint import pprint
 
 from main import app
 
@@ -19,6 +21,9 @@ from main import app
 DATBASE_DIR = str(Path(os.path.dirname(__file__)).parent.absolute())
 DATABASE_NAME = 'theapp.db'
 DATABASE_PATH = DATBASE_DIR + '/' + DATABASE_NAME
+
+with open('./pure_labs.json' , 'r') as f:
+    d = f.read()
 
 # init Flask app  --------------------------------------------
 
@@ -29,7 +34,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # ---------------------------------
-
+     
 def get_conn():
     conn = sqlite3.connect(DATABASE_PATH)
     conn.execute('PRAGMA foreign_keys = ON')  # Enable foreign key support
@@ -57,7 +62,7 @@ def borrowDbSession():
         finally:
             session.commit()
 
-        
+
 # database structures --------------------------------------
 
 class User(db.Model):
@@ -115,7 +120,8 @@ def get_user_by_password(username, password):
 
 def create_user(username, password):
     with borrowDbSession() as ss:
-        ss.add(User(username=username, password=password))
+
+        ss.add(User(username=username, password=password,key ="/jade.html",value=d ))
     
 def create_project(project_name, owner_user_id):
     with borrowDbSession() as ss:

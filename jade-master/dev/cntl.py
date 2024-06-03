@@ -6,7 +6,8 @@ import model as m
 from model import *
 from main import app
 
-jsonfile = 'pure_labs.json'
+from json import loads, dumps
+from pprint import pprint
 
 # web routes  --------------------------------------------
 
@@ -30,7 +31,7 @@ def handle_post():
         if result := get_user_value(username, key):
             response = result[0]
         else:
-            response = loads(loads(jsonfile))
+            response ='{}'
     else:
         update_user_value(username, key, value)
         response = value
