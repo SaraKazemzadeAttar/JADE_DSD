@@ -25,30 +25,15 @@ def handle_post():
     key = request.form.get('key')
     value = request.form.get('value')
     username = request.cookies.get('username')
-
+    project_name = request.form.get('project_name')
+    
     if value is None:
-        if result := get_user_value(username, key):
-            response = result[0]
-        else:
-            response ='{}'
-    else:
-        update_user_value(username, key, value)
-        response = value
-
-    return response
-
-
-@app.route('/@<username>/<project_name>', methods=['POST'])
-def handle_sharing_post(username, project_name):
-    key = request.form.get('key')
-    value = request.form.get('value')
-    if value is None:
-        if result := get_user_value_of_shared_project(project_name, username, key):
+        if result := get_value_of_project(project_name, username, key):
             response = result[0]
         else:
             response = '{}'
     else:
-        update_user_value_of_shared_project(project_name, username, key, value)
+        update_value_of_project(project_name, username, key, value)
         response = value
 
     return response
@@ -69,7 +54,6 @@ def signup_POSTReq():
             create_user(username, password)
             return redirect(url_for('login'))
 
-
 @app.route('/signup', methods=['GET'])
 def signup():
     return render_template('signup.html')
@@ -85,7 +69,7 @@ def login_POSTReq():
             resp.set_cookie('username', username)
             return resp
         else:
-            return "Invalid credentials! , Correct your password "
+            return "Invalid credentials! "
 
 @app.route('/login', methods=['GET'])
 def login():
@@ -104,12 +88,15 @@ def load_proj():
 @app.route('/user_projects', methods=['POST'])
 def new_project():
     project_name = request.form.get('project_name')
+    key = request.form.get('key')
+    value = request.form.get('value')
 
     if project_name:
         username = request.cookies.get('username')
         user = User.query.filter_by(username=username).first()
 
         if user:
+            create_project(project_name, user.id , key , value)
             resp = make_response(redirect(url_for('jade')))
             resp.set_cookie('project_name', project_name)
             return resp

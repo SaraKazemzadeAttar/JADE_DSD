@@ -78,84 +78,66 @@ class Project(db.Model):
     key = db.Column(db.Text, nullable=True)
     value = db.Column(db.Text, nullable=True)
     
-def get_user_value(username, key):
+def get_value_of_project(project_name, username, key):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
-            SELECT value
-            FROM   project
+            SELECT
+                value
+            FROM
+                project
+            JOIN
+                user
+            ON
+                user.id = project.owner_user_id
             WHERE 
-                username = ? AND
-                key      = ?
-            ''', (username, key))
+                user.username = ? AND
+                project.key = ? AND
+                project.project_name = ? 
+            ''', (username, key, project_name))
         return cursor.fetchone()
-
-def update_user_value(username, key, value):
+    
+def update_value_of_project(value, username, key, project_name):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             UPDATE project
             SET 
                 key = ?,
                 value = ?
-            FROM user
-            WHERE
+            FROM
+                user
+            WHERE 
                 user.id = project.owner_user_id AND
-                user.username = ? 
-            ''', (key, value, username))
+                user.username = ? AND
+                project.project_name = ?
+            ''', (key, value, username, project_name))
 
 def get_user(username):
     with borrowDB() as (conn, cursor):
         cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
         return cursor.fetchone()
 
+def create_user(username, password):
+    with borrowDbSession() as ss:
+        ss.add(User(username=username, password=password))
+        
 def get_user_by_password(username, password):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
                 SELECT * 
-                FROM user 
+                FROM
+                    user 
                 WHERE 
                     username = ? AND 
                     password = ?
                 ''', (username, password))
 
         return  cursor.fetchone()
-
-
-def create_user(username, password):
-    with borrowDbSession() as ss:
-        ss.add(User(username=username, password=password,key ="/jade.html",value=d ))
     
-def create_project(project_name, owner_user_id):
+def create_project(project_name, owner_user_id, key , value):
     with borrowDbSession() as ss:
-        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id))
+        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id , key = key , value = value))
 
 
-def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id):
+def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id, key , value):
     with borrowDbSession() as ss:
-        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
-def get_user_value_of_shared_project(project_name, username, key):
-    with borrowDB() as (conn, cursor):
-        cursor.execute('''
-            SELECT value
-            FROM project
-            JOIN usert ON user.id = sharing_project.owner_user_id
-            WHERE 
-                user.username = ? AND
-                user.key = ? AND
-                sharing_project.project_name = ? 
-            ''', (username, key, project_name))
-        return cursor.fetchone()
-    
-def update_user_value_of_shared_project(value, username, key, project_name):
-    with borrowDB() as (conn, cursor):
-        cursor.execute('''
-            UPDATE project
-            SET 
-                key = ?,
-                value = ?
-            FROM user
-            WHERE 
-                user.id = sharing_project.owner_user_id AND
-                user.username = ? AND
-                sharing_project.project_name = ?
-            ''', (key, value, username, project_name))
-    
+        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id ,  key = key , value = value))
