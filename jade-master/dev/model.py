@@ -70,7 +70,7 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
-class SharingProject(db.Model):
+class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is sharing
     subscriber_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is shared
@@ -82,7 +82,7 @@ def get_user_value(username, key):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             SELECT value
-            FROM   sharing_project
+            FROM   project
             WHERE 
                 username = ? AND
                 key      = ?
@@ -92,13 +92,13 @@ def get_user_value(username, key):
 def update_user_value(username, key, value):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
-            UPDATE sharing_project
+            UPDATE project
             SET 
                 key = ?,
                 value = ?
             FROM user
             WHERE
-                user.id = sharing_project.owner_user_id AND
+                user.id = project.owner_user_id AND
                 user.username = ? 
             ''', (key, value, username))
 
@@ -122,23 +122,22 @@ def get_user_by_password(username, password):
 
 def create_user(username, password):
     with borrowDbSession() as ss:
-
         ss.add(User(username=username, password=password,key ="/jade.html",value=d ))
     
 def create_project(project_name, owner_user_id):
     with borrowDbSession() as ss:
-        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id))
+        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id))
 
 
 def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id):
     with borrowDbSession() as ss:
-        ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
+        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
 def get_user_value_of_shared_project(project_name, username, key):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             SELECT value
-            FROM user
-            JOIN sharing_project ON user.id = sharing_project.owner_user_id
+            FROM project
+            JOIN usert ON user.id = sharing_project.owner_user_id
             WHERE 
                 user.username = ? AND
                 user.key = ? AND
@@ -149,11 +148,11 @@ def get_user_value_of_shared_project(project_name, username, key):
 def update_user_value_of_shared_project(value, username, key, project_name):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
-            UPDATE user
+            UPDATE project
             SET 
                 key = ?,
                 value = ?
-            FROM sharing_project
+            FROM user
             WHERE 
                 user.id = sharing_project.owner_user_id AND
                 user.username = ? AND
