@@ -91,15 +91,19 @@ def login_POSTReq():
 def login():
     return render_template('login.html')
 
+    
 @app.route('/save_project', methods=['GET'])
 def load_proj():
     if request.cookies.get('username'):
-        users = User.query.all()
-        username = request.cookies.get('username')
-        return render_template("save_project.html", users=users, current_user=username)
-    
-    else:
-        return redirect(url_for('login'))
+        # Assuming the 'username' cookie corresponds to the logged-in user's username
+        current_user = User.query.filter_by(username=request.cookies.get('username')).first()
+        if current_user:
+            # Fetch all users and shared projects
+            users = User.query.all()
+            users_shared = SharingProject.query.all()
+            # Pass the current user object and lists to the template
+            return render_template("save_project.html", users=users, current_user=current_user, users_shared=users_shared)
+    return redirect(url_for('login'))
 
 @app.route('/save_project', methods=['POST'])
 def new_project():
@@ -138,6 +142,7 @@ def jade():
         return render_template('jade.html')
     else:
         return redirect(url_for('index'))
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

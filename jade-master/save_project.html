@@ -83,8 +83,23 @@
                     </div>
                 {% endif %}
             {% endfor %}
-        </div>>
+        </div>
         <input type="submit" value="Save Project">
+
+        <label for="friend_who_shared">friend who share:</label>
+        <div id="friend_who_shared">
+            {% for shared_project in users_shared %}
+                {% if shared_project.subscriber_user_id.username != current_user %}
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="user_{{ shared_project.subscriber_user_id.id }}" name="friend_who_shared" value="{{ shared_project.subscriber_user_id.id }}">
+                        <label for="user_{{ shared_project.subscriber_user_id.id }}">{{ shared_project.subscriber_user_id.username }}</label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <input type="submit" value="Save Project">
+
+
     </form>
     
     <form method="get" action="/skip_project">
