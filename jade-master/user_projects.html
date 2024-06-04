@@ -69,51 +69,22 @@
     </style>
 </head>
 <body>
-    <form method="post" action="/save_project">
+    <form method="post" action="/user_projects">
         <label for="project_name">Project Name:</label>
         <input type="text" id="project_name" name="project_name" required>
     
-        <label for="share_with">Share with:</label>
-        <div id="share_with">
-            {% for user in users %}
-                {% if user.username != current_user %}
+        <label for="projects">Projects:</label>
+        <div id="projects">
+            {% for project in projects %}
+                {% if project.owner_user_id != current_user.id %}
                     <div class="checkbox-container">
-                        <input type="checkbox" id="user_{{ user.username }}" name="share_with" value="{{ user.username }}">
-                        <label for="user_{{ user.username }}">{{ user.username }}</label>
+                        <input type="checkbox" id="project{{ project.id }}" name="projects" value="{{ project.project_name }}">
+                        <label for="project{{ project.id }}">{{ project.project_name }}</label>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
-         /* Sara*/
-        {% for user in users %}
-            {% for project in sharing_projects %}
-                {% if user.id == project.owner_user_id %}
-                    owner_name = user.username
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
         <input type="submit" value="Save Project">
-
-        <label for="projects_which_are_shared">projects_which_are_shared:</label>
-        <div id="projects_which_are_shared">
-            {% for shared_project in users_shared %}
-                {% if owner_name != current_user %}
-                    <div class="checkbox-container">
-                        /* Sara*/
-                        <input type="checkbox" id="user_{{ shared_project.subscriber_user_id }}" name="projects_which_are_shared" value="{{ shared_project.subscriber_user_id }}">
-                        <label for="user_{{ shared_project.subscriber_user_id }}">{{ owner_name }}</label>
-                    </div>
-                {% endif %}
-            {% endfor %}
-
-        </div>
-        <input type="submit" value="Save Project">
-
-
-    </form>
-    
-    <form method="get" action="/skip_project">
-        <input type="submit" value="Skip">
     </form>
 </body>
 </html>

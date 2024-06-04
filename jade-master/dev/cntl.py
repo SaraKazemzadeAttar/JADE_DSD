@@ -92,47 +92,16 @@ def login():
     return render_template('login.html')
 
     
-@app.route('/save_project', methods=['GET'])
-def load_proj():
-    if request.cookies.get('username'):
-        # Assuming the 'username' cookie corresponds to the logged-in user's username
-        current_user = User.query.filter_by(username=request.cookies.get('username')).first()
-        if current_user:
-            # Fetch all users and shared projects
-            users = User.query.all()
-            users_shared = SharingProject.query.all()
-            # Pass the current user object and lists to the template
-            return render_template("save_project.html", users=users, current_user=current_user, users_shared=users_shared)
-    return redirect(url_for('login'))
-
-@app.route('/save_project', methods=['POST'])
-def new_project():
-    project_name = request.form.get('project_name')
-
-    if project_name:
-        username = request.cookies.get('username')
+@app.route('/user_projects')
+def user_projects():
+    username = request.cookies.get('username')
+    if username:
         user = User.query.filter_by(username=username).first()
-
         if user:
-            create_project(project_name, user.id)
-            selected_users = request.form.getlist('share_with')
-            subscribers = User.query.filter(User.username.in_(selected_users)).all()
-            for subscriber in subscribers:
-                create_project_with_subscribers(project_name, user.id, subscriber.id)
-            resp = make_response(redirect(url_for('jade')))
-            resp.set_cookie('project_name', project_name)
-            return resp
-        else:
-            return "User not found.", 400
-    else:
-        return "No project name provided.", 400
-
-@app.route('/skip_project', methods=['GET'])
-def skip_project():
-    resp = make_response(redirect(url_for('jade')))
-    # Set the 'project_name' cookie to expire immediately to effectively delete it
-    resp.set_cookie('project_name', '', max_age=0)
-    return resp
+            projects = Project.query.filter_by(owner_user_id=user.id).all()
+            return render_template("user_projects.html", projects=projects)
+        return "User not found", 404
+    return redirect(url_for('login'))
 
 @app.route('/jade.html')
 def jade():
