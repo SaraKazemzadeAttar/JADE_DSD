@@ -92,16 +92,32 @@ def login():
     return render_template('login.html')
 
     
-@app.route('/user_projects')
-def user_projects():
-    username = request.cookies.get('username')
-    if username:
-        user = User.query.filter_by(username=username).first()
-        if user:
-            projects = Project.query.filter_by(owner_user_id=user.id).all()
-            return render_template("user_projects.html", projects=projects)
-        return "User not found", 404
+@app.route('/user_projects', methods=['GET'])
+def load_proj():
+    if request.cookies.get('username'):
+        current_user = User.query.filter_by(username=request.cookies.get('username')).first()
+        if current_user:
+            projects = Project.query.all()
+            return render_template("user_projects.html", current_user=current_user, projects=projects)
     return redirect(url_for('login'))
+
+@app.route('/user_projects', methods=['POST'])
+def new_project():
+    project_name = request.form.get('project_name')
+
+    if project_name:
+        username = request.cookies.get('username')
+        user = User.query.filter_by(username=username).first()
+
+        if user:
+            resp = make_response(redirect(url_for('jade')))
+            resp.set_cookie('project_name', project_name)
+            return resp
+        else:
+            return "User not found.", 400
+    else:
+        return "No project name provided.", 400
+    
 
 @app.route('/jade.html')
 def jade():
