@@ -76,7 +76,7 @@
         <label for="projects">Projects:</label>
         <div id="projects">
             {% for project in projects %}
-                {% if project.owner_user_id != current_user.id %}
+                {% if project.owner_user_id == current_user.id %}
                     <div class="checkbox-container">
                         <input type="checkbox" id="project{{ project.id }}" name="projects" value="{{ project.project_name }}">
                         <label for="project{{ project.id }}">{{ project.project_name }}</label>
