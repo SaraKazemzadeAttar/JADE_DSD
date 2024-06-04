@@ -69,21 +69,20 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    key = db.Column(db.Text, nullable=True)
-    value = db.Column(db.Text, nullable=True)
 
 class SharingProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is sharing
     subscriber_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is shared
     project_name = db.Column(db.String(100), nullable=False)
-
+    key = db.Column(db.Text, nullable=True)
+    value = db.Column(db.Text, nullable=True)
     
 def get_user_value(username, key):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             SELECT value
-            FROM   user
+            FROM   sharing_project
             WHERE 
                 username = ? AND
                 key      = ?
@@ -93,11 +92,14 @@ def get_user_value(username, key):
 def update_user_value(username, key, value):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
-            UPDATE user
+            UPDATE sharing_project
             SET 
                 key = ?,
                 value = ?
-            WHERE username = ?
+            FROM user
+            WHERE
+                user.id = sharing_project.owner_user_id AND
+                user.username = ? 
             ''', (key, value, username))
 
 def get_user(username):
