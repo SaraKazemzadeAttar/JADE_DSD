@@ -20,12 +20,11 @@ def serve_static(path):
     except FileNotFoundError:
         abort(404)
         
-
 @app.route('/', methods=['POST'])
 def handle_post():
-    username = request.cookies.get('username')
     key = request.form.get('key')
     value = request.form.get('value')
+    username = request.cookies.get('username')
 
     if value is None:
         if result := get_user_value(username, key):
@@ -34,6 +33,22 @@ def handle_post():
             response ='{}'
     else:
         update_user_value(username, key, value)
+        response = value
+
+    return response
+
+
+@app.route('/@<username>/<project_name>', methods=['POST'])
+def handle_sharing_post(username, project_name):
+    key = request.form.get('key')
+    value = request.form.get('value')
+    if value is None:
+        if result := get_user_value_of_shared_project(project_name, username, key):
+            response = result[0]
+        else:
+            response = '{}'
+    else:
+        update_user_value_of_shared_project(project_name, username, key, value)
         response = value
 
     return response
@@ -100,7 +115,8 @@ def new_project():
             subscribers = User.query.filter(User.username.in_(selected_users)).all()
             for subscriber in subscribers:
                 create_project_with_subscribers(project_name, user.id, subscriber.id)
-                handle_post()
+                owner_username = user.username 
+                handle_sharing_post(owner_username, project_name)
             resp = make_response(redirect(url_for('jade')))
             resp.set_cookie('project_name', project_name)
             return resp

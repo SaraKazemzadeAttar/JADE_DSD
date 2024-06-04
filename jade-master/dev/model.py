@@ -131,12 +131,30 @@ def create_project(project_name, owner_user_id):
 def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id):
     with borrowDbSession() as ss:
         ss.add(SharingProject(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id))
-
-def update_value_of_subscriber(value ,subscriber_user_id):
+def get_user_value_of_shared_project(project_name, username, key):
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+            SELECT value
+            FROM user
+            JOIN sharing_project ON user.id = sharing_project.owner_user_id
+            WHERE 
+                user.username = ? AND
+                user.key = ? AND
+                sharing_project.project_name = ? 
+            ''', (username, key, project_name))
+        return cursor.fetchone()
+    
+def update_user_value_of_shared_project(value, username, key, project_name):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             UPDATE user
             SET 
+                key = ?,
                 value = ?
-            WHERE id = ?
-            ''', ( value, subscriber_user_id))
+            FROM sharing_project
+            WHERE 
+                user.id = sharing_project.owner_user_id AND
+                user.username = ? AND
+                sharing_project.project_name = ?
+            ''', (key, value, username, project_name))
+    
