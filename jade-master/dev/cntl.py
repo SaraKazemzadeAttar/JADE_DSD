@@ -115,8 +115,6 @@ def new_project():
             subscribers = User.query.filter(User.username.in_(selected_users)).all()
             for subscriber in subscribers:
                 create_project_with_subscribers(project_name, user.id, subscriber.id)
-                owner_username = user.username 
-                handle_sharing_post(owner_username, project_name)
             resp = make_response(redirect(url_for('jade')))
             resp.set_cookie('project_name', project_name)
             return resp
