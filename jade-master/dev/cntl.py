@@ -79,6 +79,20 @@ def login_POSTReq():
 def login():
     return render_template('login.html')
 
+
+@app.route('/share_project', methods=['GET', 'POST'])
+def share_project():
+    if request.method == 'POST':   
+        return redirect(url_for('jade'))
+
+    users = User.query.all()
+    return render_template('share_project.html', users=users)
+
+
+@app.route('/skip_project', methods=['GET'])
+def skip_project():
+    return redirect(url_for('jade'))
+
     
 @app.route('/user_projects', methods=['GET'])
 def load_proj():
@@ -107,9 +121,10 @@ def new_project():
                     notification = "Project with this name already exists!"
                 else:
                     create_project(project_name, user.id, key, value)
-                    resp = make_response(redirect(url_for('jade')))
+                    resp = make_response(redirect(url_for('share_project')))
                     resp.set_cookie('project_name', project_name)
                     return resp
+
             else:
                 return "User not found.", 400
         else:
