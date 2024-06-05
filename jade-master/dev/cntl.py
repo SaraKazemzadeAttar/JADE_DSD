@@ -82,10 +82,15 @@ def login():
 
 @app.route('/share_project', methods=['GET', 'POST'])
 def share_project():
-    if request.method == 'POST':   
+    if request.method == 'POST':
         return redirect(url_for('jade'))
 
-    users = User.query.all()
+    # Assuming you store the logged-in user's username in the session
+    logged_in_username = request.cookies.get('username')
+
+    # Fetch all users except the logged-in user
+    users = User.query.filter(User.username != logged_in_username).all()
+
     return render_template('share_project.html', users=users)
 
 

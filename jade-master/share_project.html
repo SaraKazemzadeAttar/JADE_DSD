@@ -71,7 +71,7 @@
 <body>
     <form method="post" action="{{ url_for('share_project') }}">
         <input type="hidden" name="project_name" value="{{ request.cookies.get('project_name') }}">
-
+    
         <label for="share_with">Share with:</label>
         <div id="share_with">
             {% for user in users %}
@@ -81,9 +81,10 @@
                 </div>
             {% endfor %}
         </div>
-
+    
         <input type="submit" value="Share Project">
     </form>
+    
 
     <form method="get" action="{{ url_for('skip_project') }}">
         <input type="submit" value="Skip">
