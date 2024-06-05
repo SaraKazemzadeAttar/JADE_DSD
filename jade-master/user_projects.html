@@ -67,24 +67,25 @@
 </head>
 <body>
     <form method="post" action="/user_projects">
-        <label for="project_name">Project Name:</label>
-        <input type="text" id="project_name" name="project_name" >
+    <label for="project_name">Project Name:</label>
+    <input type="text" id="project_name" name="project_name">
 
-        <input type="submit" name="save_project" value="Save Project">
+    <input type="submit" name="save_project" value="Save Project">
 
-        <label for="projects">Projects:</label>
-        <div id="projects">
-            {% for project in projects %}
-                {% if project.owner_user_id == current_user.id %}
-                    <div class="radio-container">
-                        <input type="radio" id="project{{ project.id }}" name="project" value="{{ project.id }}">
-                        <label for="project{{ project.id }}">{{ project.project_name }}</label>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+    <label for="projects">Projects:</label>
+    <div id="projects">
+        {% for project in projects %}
+            {% if project.owner_user_id == current_user.id %}
+                <div class="radio-container">
+                    <input type="radio" id="project{{ project.id }}" name="project" value="{{ project.id }}">
+                    <label for="project{{ project.id }}">{{ project.project_name }}</label>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
 
-        <input type="submit" name="go_to_project" value="go to project">
-    </form>
+    <input type="submit" name="go_to_project" value="go to project">
+</form>
+
 </body>
 </html>
