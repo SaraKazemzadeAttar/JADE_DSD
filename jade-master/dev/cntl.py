@@ -80,7 +80,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/share_project', methods=['GET', 'POST'])
+@app.route('/share_project', methods=['POST' , 'GET'])
 def share_project():
     if request.method == 'POST':
         return redirect(url_for('jade'))
@@ -89,7 +89,7 @@ def share_project():
     logged_in_username = request.cookies.get('username')
 
     # Fetch all users except the logged-in user
-    users = User.query.filter(User.username != logged_in_username).all()
+    users = fetch_users(logged_in_username)
 
     return render_template('share_project.html', users=users)
 
@@ -101,10 +101,11 @@ def skip_project():
     
 @app.route('/user_projects', methods=['GET'])
 def load_proj():
-    if request.cookies.get('username'):
-        current_user = User.query.filter_by(username=request.cookies.get('username')).first()
+    username = request.cookies.get('username')
+    if username:
+        current_user = get_user(username)
         if current_user:
-            projects = Project.query.all()
+            projects = get_all_projects()
             return render_template("user_projects.html", current_user=current_user, projects=projects)
     return redirect(url_for('login'))
 
@@ -118,10 +119,10 @@ def new_project():
     if "save_project" in request.form:
         if project_name:
             username = request.cookies.get('username')
-            user = User.query.filter_by(username=username).first()
+            user = get_user(username)
 
             if user:
-                existing_project = Project.query.filter_by(project_name=project_name, owner_user_id=user.id).first()
+                existing_project = get_project(project_name , user.id)
                 if existing_project:
                     notification = "Project with this name already exists!"
                 else:
@@ -138,7 +139,7 @@ def new_project():
     elif "go_to_project" in request.form:
         selected_project_id = request.form.get('project')
         if selected_project_id:
-            project = Project.query.get(selected_project_id)
+            project = get_project_by_project_id(selected_project_id)
             if project:
                 resp = make_response(redirect(url_for('jade', project_id=selected_project_id)))
                 resp.set_cookie('project_name', project.project_name)

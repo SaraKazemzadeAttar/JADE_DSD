@@ -112,15 +112,9 @@ def update_value_of_project(value, username, key, project_name):
             ''', (key, value, username, project_name))
 
 def get_user(username):
-    with borrowDB() as (conn, cursor):
-        cursor.execute('''
-                       SELECT * 
-                       FROM
-                            user 
-                       WHERE
-                            username = ?'''
-                       ,(username,))
-        return cursor.fetchone()
+    with borrowDbSession() as ss:
+        return User.query.filter_by(username = username).first()
+
 
 def create_user(username, password):
     with borrowDbSession() as ss:
@@ -139,21 +133,23 @@ def get_user_by_password(username, password):
 
         return  cursor.fetchone()
     
-def get_project(project_name, owner_user_id):
-    with borrowDB() as (conn, cursor):
-        cursor.execute('''
-                       SELECT * 
-                       FROM
-                           project
-                       WHERE
-                            project_name = ? AND
-                            owner_user_id = ?'''
-                       ,(project_name,owner_user_id))
-        return cursor.fetchone()
+def fetch_users(logged_in_username) :
+    with borrowDbSession() as ss:
+        return User.query.filter(User.username != logged_in_username).all()   
+
+def get_all_projects():
+    with borrowDbSession() as ss:
+        return Project.query.all()
+         
+def get_project(proj_name, owner_id):
+    with borrowDbSession() as ss:
+       return Project.query.filter_by(project_name=proj_name, owner_user_id= owner_id).first()
+   
+def get_project_by_project_id(p_id):
+    with borrowDbSession() as ss:
+        return Project.query.get(p_id)
     
 def create_project(project_name, owner_user_id, key , value):
-    # new_project = get_project(project_name, owner_user_id)
-    # if new_project:
         with borrowDbSession() as ss:
             ss.add(Project(project_name=project_name, owner_user_id=owner_user_id , key = key , value = value))
         
