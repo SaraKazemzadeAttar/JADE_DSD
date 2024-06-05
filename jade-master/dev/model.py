@@ -152,8 +152,8 @@ def get_project(project_name, owner_user_id):
         return cursor.fetchone()
     
 def create_project(project_name, owner_user_id, key , value):
-    new_project = get_project(project_name, owner_user_id)
-    if new_project:
+    # new_project = get_project(project_name, owner_user_id)
+    # if new_project:
         with borrowDbSession() as ss:
             ss.add(Project(project_name=project_name, owner_user_id=owner_user_id , key = key , value = value))
         
