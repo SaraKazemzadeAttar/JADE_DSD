@@ -91,30 +91,34 @@ def new_project():
     key = request.form.get('key')
     value = request.form.get('value')
 
-    if project_name:
-        username = request.cookies.get('username')
-        user = User.query.filter_by(username=username).first()
+    if "save_project" in request.form:
+        if project_name:
+            username = request.cookies.get('username')
+            user = User.query.filter_by(username=username).first()
 
-        if user:
-            create_project(project_name, user.id , key , value)
-            resp = make_response(redirect(url_for('jade')))
-            resp.set_cookie('project_name', project_name)
-            return resp
+            if user:
+                create_project(project_name, user.id , key , value)
+                resp = make_response(redirect(url_for('jade')))
+                resp.set_cookie('project_name', project_name)
+                return resp
+            else:
+                return "User not found.", 400
         else:
-            return "User not found.", 400
-    else:
-        return "No project name provided.", 400
-    
+            return "No project name provided.", 400
+    elif "go_to_project" in request.form:
+        selected_project_id = request.form.get('project')
+        return redirect(url_for('jade', project_id=selected_project_id))
+
 
 @app.route('/jade.html')
 def jade():
     username = request.cookies.get('username')
+    project_id = request.args.get('project_id')
 
     if username  :
-        return render_template('jade.html')
+        return render_template('jade.html', project_id=project_id)
     else:
         return redirect(url_for('index'))
-    
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

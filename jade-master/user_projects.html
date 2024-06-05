@@ -15,25 +15,22 @@
             height: 100vh;
             margin: 0;
         }
-
+    
         form {
             background-color: #ffffff; /* White background for the form */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
-            margin-bottom: 20px; /* Add margin bottom for spacing between forms */
         }
-
+    
         label {
             display: block;
             margin-bottom: 8px;
             color: #6a1b9a; /* Medium purple */
         }
-
-        input[type="text"],
-        input[type="password"],
-        select {
+    
+        input[type="text"] {
             width: calc(100% - 22px); /* Adjust width for select to match input width */
             padding: 10px;
             margin-bottom: 20px;
@@ -41,17 +38,17 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-
-        .checkbox-container {
+    
+        .radio-container {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-
-        .checkbox-container input {
+    
+        .radio-container input {
             margin-right: 10px;
         }
-
+    
         input[type="submit"] {
             width: 100%;
             padding: 10px;
@@ -62,7 +59,7 @@
             font-size: 16px;
             cursor: pointer;
         }
-
+    
         input[type="submit"]:hover {
             background-color: #4a148c; /* Dark purple on hover */
         }
@@ -71,20 +68,23 @@
 <body>
     <form method="post" action="/user_projects">
         <label for="project_name">Project Name:</label>
-        <input type="text" id="project_name" name="project_name" required>
-    
+        <input type="text" id="project_name" name="project_name" >
+
+        <input type="submit" name="save_project" value="Save Project">
+
         <label for="projects">Projects:</label>
         <div id="projects">
             {% for project in projects %}
                 {% if project.owner_user_id == current_user.id %}
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="project{{ project.id }}" name="projects" value="{{ project.project_name }}">
+                    <div class="radio-container">
+                        <input type="radio" id="project{{ project.id }}" name="project" value="{{ project.id }}">
                         <label for="project{{ project.id }}">{{ project.project_name }}</label>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
-        <input type="submit" value="Save Project">
+
+        <input type="submit" name="go_to_project" value="go to project">
     </form>
 </body>
 </html>
