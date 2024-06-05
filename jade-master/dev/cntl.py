@@ -94,24 +94,30 @@ def new_project():
     project_name = request.form.get('project_name')
     key = request.form.get('key')
     value = request.form.get('value')
+    ### SARA 
+    # owner_id = request.cookies.get('owner_user_id')
+    # existing_project = get_project(project_name , owner_id)
+    # if existing_project:
+    #     return "project with this name already exists!" 
+    
+    else:
+        if "save_project" in request.form:
+            if project_name:
+                username = request.cookies.get('username')
+                user = User.query.filter_by(username=username).first()
 
-    if "save_project" in request.form:
-        if project_name:
-            username = request.cookies.get('username')
-            user = User.query.filter_by(username=username).first()
-
-            if user:
-                create_project(project_name, user.id , key , value)
-                resp = make_response(redirect(url_for('jade')))
-                resp.set_cookie('project_name', project_name)
-                return resp
+                if user:
+                    create_project(project_name, user.id , key , value)
+                    resp = make_response(redirect(url_for('jade')))
+                    resp.set_cookie('project_name', project_name)
+                    return resp
+                else:
+                    return "User not found.", 400
             else:
-                return "User not found.", 400
-        else:
-            return "No project name provided.", 400
-    elif "go_to_project" in request.form:
-        selected_project_id = request.form.get('project')
-        return redirect(url_for('jade', project_id=selected_project_id))
+                return "No project name provided.", 400
+        elif "go_to_project" in request.form:
+            selected_project_id = request.form.get('project')
+            return redirect(url_for('jade', project_id=selected_project_id))
 
 
 @app.route('/jade.html')

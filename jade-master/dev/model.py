@@ -113,7 +113,13 @@ def update_value_of_project(value, username, key, project_name):
 
 def get_user(username):
     with borrowDB() as (conn, cursor):
-        cursor.execute('SELECT * FROM user WHERE username = ?', (username,))
+        cursor.execute('''
+                       SELECT * 
+                       FROM
+                            user 
+                       WHERE
+                            username = ?'''
+                       ,(username,))
         return cursor.fetchone()
 
 def create_user(username, password):
@@ -133,11 +139,24 @@ def get_user_by_password(username, password):
 
         return  cursor.fetchone()
     
+def get_project(project_name, owner_user_id):
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+                       SELECT * 
+                       FROM
+                           project
+                       WHERE
+                            project_name = ? AND
+                            owner_user_id = ?'''
+                       ,(project_name,owner_user_id))
+        return cursor.fetchone()
+    
 def create_project(project_name, owner_user_id, key , value):
-    with borrowDbSession() as ss:
-        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id , key = key , value = value))
-
-
+    new_project = get_project(project_name, owner_user_id)
+    if new_project:
+        with borrowDbSession() as ss:
+            ss.add(Project(project_name=project_name, owner_user_id=owner_user_id , key = key , value = value))
+        
 def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id, key , value):
     with borrowDbSession() as ss:
         ss.add(Project(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id ,  key = key , value = value))
