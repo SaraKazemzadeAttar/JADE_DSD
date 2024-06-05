@@ -22,9 +22,9 @@ DATBASE_DIR = str(Path(os.path.dirname(__file__)).parent.absolute())
 DATABASE_NAME = 'theapp.db'
 DATABASE_PATH = DATBASE_DIR + '/' + DATABASE_NAME
 
-with open('./pure_labs.json' , 'r') as f:
-    d = f.read()
-
+# with open('./pure_labs.json' , 'r') as f:
+#     d = f.read()
+d= '{}'
 # init Flask app  --------------------------------------------
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DATABASE_PATH
@@ -106,8 +106,8 @@ def update_value_of_project(value, username, key, project_name):
             FROM
                 user
             WHERE 
-                user.id = project.owner_user_id AND
-                user.username = ? AND
+                user.id              = project.owner_user_id AND
+                user.username        = ?                     AND
                 project.project_name = ?
             ''', (key, value, username, project_name))
 

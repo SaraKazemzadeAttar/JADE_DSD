@@ -25,7 +25,7 @@ def handle_post():
     key = request.form.get('key')
     value = request.form.get('value')
     username = request.cookies.get('username')
-    project_name = request.form.get('project_name')
+    project_name = request.cookies.get('project_name')
     
     if value is None:
         if result := get_value_of_project(project_name, username, key):
@@ -33,7 +33,11 @@ def handle_post():
         else:
             response = '{}'
     else:
-        update_value_of_project(project_name, username, key, value)
+        update_value_of_project(
+            project_name = project_name, 
+            username     = username, 
+            key          = key, 
+            value        = value)
         response = value
 
     return response
