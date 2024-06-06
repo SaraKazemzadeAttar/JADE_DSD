@@ -77,6 +77,9 @@ class Project(db.Model):
     project_name = db.Column(db.String(100), nullable=False)
     key = db.Column(db.Text, nullable=True)
     value = db.Column(db.Text, nullable=True)
+
+    owner = db.relationship('User', foreign_keys=[owner_user_id], backref='owned_projects')
+    subscriber = db.relationship('User', foreign_keys=[subscriber_user_id], backref='shared_projects')
     
 def get_value_of_project(project_name, username, key):
     with borrowDB() as (conn, cursor):

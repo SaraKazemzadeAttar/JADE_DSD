@@ -101,8 +101,7 @@ def share_project_POST():
 
     owner = User.query.filter_by(username=logged_in_username).first()
     if not owner:
-        return redirect(url_for('login'))  # Assuming there's a login route
-
+        return redirect(url_for('login')) 
     selected_usernames = request.form.getlist('share_with')
     subscribers = User.query.filter(User.username.in_(selected_usernames)).all()
 
@@ -115,7 +114,7 @@ def share_project_POST():
         db.session.add(new_subscription)
     db.session.commit()
 
-    return redirect(url_for('jade'))  # Redirect to the appropriate page
+    return redirect(url_for('jade'))  
 
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
@@ -129,7 +128,9 @@ def load_proj():
         current_user = get_user(username)
         if current_user:
             projects = get_all_projects()
-            return render_template("user_projects.html", current_user=current_user, projects=projects)
+            owned_projects = current_user.owned_projects
+            shared_projects = current_user.shared_projects
+            return render_template("user_projects.html", current_user=current_user, projects=projects,owned_projects=owned_projects, shared_projects=shared_projects)
     return redirect(url_for('login'))
 
 @app.route('/user_projects', methods=['POST'])

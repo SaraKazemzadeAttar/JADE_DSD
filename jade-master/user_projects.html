@@ -78,7 +78,7 @@
             {% endif %}
         </div>
     
-        <label for="projects">Projects:</label>
+        <label for="projects">Your Projects:</label>
         <div id="projects">
             {% for project in projects %}
                 {% if project.owner_user_id == current_user.id %}
@@ -90,8 +90,19 @@
             {% endfor %}
         </div>
     
-        <input type="submit" name="go_to_project" value="go to project">
+        <label for="shared_projects">Shared Projects:</label>
+        <div id="shared_projects">
+            {% for project in shared_projects %}
+                <div class="radio-container">
+                    <input type="radio" id="project{{ project.id }}" name="project" value="{{ project.id }}">
+                    <label for="project{{ project.id }}">{{ project.project_name }} (Shared by {{ project.owner.username }})</label>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <input type="submit" name="go_to_project" value="Go to Project">
     </form>
+    
     
 
 </body>
