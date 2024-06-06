@@ -22,25 +22,29 @@ def serve_static(path):
         
 @app.route('/', methods=['POST'])
 def handle_post():
-    key = request.form.get('key')
     value = request.form.get('value')
-    username = request.cookies.get('username')
-    project_name = request.cookies.get('project_name')
+    project_id = request.cookies.get('project_id')
     
     if value is None:
-        if result := get_value_of_project(project_name, username, key):
+        if result := get_value_of_project(project_id):
             response = result[0]
         else:
             response = '{}'
     else:
         update_value_of_project(
-            project_name = project_name, 
-            username     = username, 
-            key          = key, 
+            project_id = project_id, 
             value        = value)
         response = value
 
     return response
+
+@app.route('/@<owner_id>/<project_name>', methods=['POST'])
+def set_project_id(owner_id, project_name):
+
+    project_id = find_proj_id(owner_id, project_name)
+    resp = make_response(redirect(url_for('jade.html')))
+    resp.set_cookie('project_id', project_id)
+    return resp
 
 @app.route('/', methods=['GET'])
 def index():

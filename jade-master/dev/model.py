@@ -81,38 +81,22 @@ class Project(db.Model):
     owner = db.relationship('User', foreign_keys=[owner_user_id], backref='owned_projects')
     subscriber = db.relationship('User', foreign_keys=[subscriber_user_id], backref='shared_projects')
     
-def get_value_of_project(project_name, username, key):
-    with borrowDB() as (conn, cursor):
-        cursor.execute('''
-            SELECT
-                value
-            FROM
-                project
-            JOIN
-                user
-            ON
-                user.id = project.owner_user_id
-            WHERE 
-                user.username = ? AND
-                project.key = ? AND
-                project.project_name = ? 
-            ''', (username, key, project_name))
-        return cursor.fetchone()
+def get_value_of_project(project_id):
+    with borrowDbSession() as session:
+       value = session.query(Project).filter_by(id = project_id).first()
+       return value if value else None
     
-def update_value_of_project(value, username, key, project_name):
+def update_value_of_project(project_id , value ):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             UPDATE project
-            SET 
-                key = ?,
+            SET
                 value = ?
             FROM
                 user
-            WHERE 
-                user.id              = project.owner_user_id AND
-                user.username        = ?                     AND
-                project.project_name = ?
-            ''', (key, value, username, project_name))
+            WHERE
+                project.id= ?
+            ''', (value, project_id))
 
 def get_user(username):
     with borrowDbSession() as ss:
@@ -159,3 +143,8 @@ def create_project(project_name, owner_user_id, key , value):
 def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id, key , value):
     with borrowDbSession() as ss:
         ss.add(Project(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id ,  key = key , value = value))
+        
+def find_proj_id(owner_id, project_name):
+    with borrowDbSession() as session:
+        project = session.query(User).filter_by(owner_user_id = owner_id , project_name = project_name).first()
+        return project.id if project else None
