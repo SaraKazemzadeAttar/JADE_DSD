@@ -80,19 +80,42 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/share_project', methods=['POST' , 'GET'])
+@app.route('/share_project', methods=['GET'])
 def share_project():
-    if request.method == 'POST':
-        return redirect(url_for('jade'))
-
-    # Assuming you store the logged-in user's username in the session
+    project_name = request.cookies.get('project_name')
     logged_in_username = request.cookies.get('username')
 
-    # Fetch all users except the logged-in user
-    users = fetch_users(logged_in_username)
+    if not logged_in_username:
+        return redirect(url_for('login'))  # Assuming there's a login route
 
+    users = fetch_users(logged_in_username)
     return render_template('share_project.html', users=users)
 
+@app.route('/share_project', methods=['POST'])
+def share_project_POST():
+    project_name = request.cookies.get('project_name')
+    logged_in_username = request.cookies.get('username')
+
+    if not logged_in_username:
+        return redirect(url_for('login'))  # Assuming there's a login route
+
+    owner = User.query.filter_by(username=logged_in_username).first()
+    if not owner:
+        return redirect(url_for('login'))  # Assuming there's a login route
+
+    selected_usernames = request.form.getlist('share_with')
+    subscribers = User.query.filter(User.username.in_(selected_usernames)).all()
+
+    for subscriber in subscribers:
+        new_subscription = Project(
+            owner_user_id=owner.id,
+            subscriber_user_id=subscriber.id,
+            project_name=project_name
+        )
+        db.session.add(new_subscription)
+    db.session.commit()
+
+    return redirect(url_for('jade'))  # Redirect to the appropriate page
 
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
