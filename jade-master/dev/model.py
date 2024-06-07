@@ -89,7 +89,9 @@ def get_value_of_project(project_id):
             WHERE 
                 id = ?
             ''', (project_id))
+        print(cursor.fetchone())
         return cursor.fetchone()
+    
 
     
 def update_value_of_project(project_id , value ):
