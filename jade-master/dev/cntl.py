@@ -1,15 +1,10 @@
-# imports --------------------------------------------
-from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort , g 
+from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort, g
 from json import loads
-
 import model as m
 from model import *
 from main import app
 
-from json import loads, dumps
-from pprint import pprint
-
-# web routes  --------------------------------------------
+# Web routes --------------------------------------------
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_static(path):
@@ -19,7 +14,7 @@ def serve_static(path):
         return send_from_directory('.', path)
     except FileNotFoundError:
         abort(404)
-        
+
 @app.route('/', methods=['POST'])
 def handle_post():
     value = request.form.get('value')
@@ -32,15 +27,14 @@ def handle_post():
             response = '{}'
     else:
         update_value_of_project(
-            project_id = project_id, 
-            value        = value)
+            project_id=project_id, 
+            value=value)
         response = value
 
     return response
 
 @app.route('/@<owner_id>/<project_name>', methods=['POST'])
 def set_project_id(owner_id, project_name):
-
     project_id = find_proj_id(owner_id, project_name)
     resp = make_response(redirect(url_for('jade.html')))
     resp.set_cookie('project_id', project_id)
@@ -52,15 +46,15 @@ def index():
 
 @app.route('/signup', methods=['POST'])
 def signup_POSTReq():
-        username = request.form.get('username')
-        password = request.form.get('password')
+    username = request.form.get('username')
+    password = request.form.get('password')
 
-        existing_user = get_user(username)
-        if existing_user:
-            return "username already exists!"
-        else:
-            create_user(username, password)
-            return redirect(url_for('login'))
+    existing_user = get_user(username)
+    if existing_user:
+        return "Username already exists!"
+    else:
+        create_user(username, password)
+        return redirect(url_for('login'))
 
 @app.route('/signup', methods=['GET'])
 def signup():
@@ -68,21 +62,20 @@ def signup():
 
 @app.route('/login', methods=['POST'])
 def login_POSTReq():
-        username = request.form['username']
-        password = request.form['password']
+    username = request.form['username']
+    password = request.form['password']
 
-        user = get_user_by_password(username, password)
-        if user:
-            resp = make_response(redirect(url_for('new_project')))
-            resp.set_cookie('username', username)
-            return resp
-        else:
-            return "Invalid credentials! "
+    user = get_user_by_password(username, password)
+    if user:
+        resp = make_response(redirect(url_for('new_project')))
+        resp.set_cookie('username', username)
+        return resp
+    else:
+        return "Invalid credentials!"
 
 @app.route('/login', methods=['GET'])
 def login():
     return render_template('login.html')
-
 
 @app.route('/share_project', methods=['GET'])
 def share_project():
@@ -124,7 +117,6 @@ def share_project_POST():
 def skip_project():
     return redirect(url_for('jade'))
 
-    
 @app.route('/user_projects', methods=['GET'])
 def load_proj():
     username = request.cookies.get('username')
@@ -134,38 +126,39 @@ def load_proj():
             projects = get_all_projects()
             owned_projects = current_user.owned_projects
             shared_projects = current_user.shared_projects
-            return render_template("user_projects.html", current_user=current_user, projects=projects,owned_projects=owned_projects, shared_projects=shared_projects)
+            return render_template("user_projects.html", current_user=current_user, projects=projects, owned_projects=owned_projects, shared_projects=shared_projects)
     return redirect(url_for('login'))
 
-@app.route('/user_projects', methods=['POST'])
+@app.route('/user_projects', methods=['GET', 'POST'])
 def new_project():
-    project_name = request.form.get('project_name')
-    key = request.form.get('key')
-    value = request.form.get('value')
     notification = None
+    
+    if request.method == 'POST':
+        project_name = request.form.get('project_name')
+        key = request.form.get('key')
+        value = request.form.get('value')
 
-    if "save_project" in request.form:
-        if project_name:
-            username = request.cookies.get('username')
-            user = get_user(username)
+        if "save_project" in request.form:
+            if project_name:
+                username = request.cookies.get('username')
+                user = get_user(username)
 
-            if user:
-                existing_project = get_project(project_name , user.id)
-                if existing_project:
-                    notification = "Project with this name already exists!"
+                if user:
+                    existing_project = get_project(project_name, user.id)
+                    if existing_project:
+                        notification = "Project with this name already exists!"
+                    else:
+                        create_project(project_name, user.id, key, value)
+                        resp = make_response(redirect(url_for('share_project')))
+                        resp.set_cookie('project_name', project_name)
+                        return resp
                 else:
-                    create_project(project_name, user.id, key, value)
-                    resp = make_response(redirect(url_for('share_project')))
-                    resp.set_cookie('project_name', project_name)
-                    return resp
-
+                    return "User not found.", 400
             else:
-                return "User not found.", 400
-        else:
-            return "No project name provided.", 400
+                return "No project name provided.", 400
 
-    elif "go_to_project" in request.form:
-        selected_project_id = request.form.get('project')
+    elif request.method == 'GET':
+        selected_project_id = request.args.get('project_id')
         if selected_project_id:
             project = get_project_by_project_id(selected_project_id)
             if project:
@@ -174,18 +167,25 @@ def new_project():
                 return resp
             else:
                 return "Project not found.", 400
-        else:
-            return "No project selected.", 400
 
     return render_template('user_projects.html', notification=notification)
 
+@app.route('/set_project/<int:project_id>', methods=['GET'])
+def set_project(project_id):
+    project = get_project_by_project_id(project_id)
+    if project:
+        resp = make_response(redirect(url_for('jade', project_id=project_id)))
+        resp.set_cookie('project_name', project.project_name)
+        return resp
+    else:
+        return "Project not found.", 400
 
 @app.route('/jade.html')
 def jade():
     username = request.cookies.get('username')
     project_id = request.args.get('project_id')
 
-    if username  :
+    if username:
         return render_template('jade.html', project_id=project_id)
     else:
         return redirect(url_for('index'))

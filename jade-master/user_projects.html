@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Title</title>
+    <script>
+        function setProjectCookieAndRedirect(projectName, projectUrl) {
+            document.cookie = "project_name=" + projectName + "; path=/";
+            window.location.href = projectUrl;
+        }
+    </script>
     <style>
         body {
             background-color: #f3e5f5; /* Light lavender background */
@@ -15,40 +21,31 @@
             height: 100vh;
             margin: 0;
         }
-    
+        
         form {
             background-color: #ffffff; /* White background for the form */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            margin-bottom: 20px;
         }
-    
+        
         label {
             display: block;
             margin-bottom: 8px;
             color: #6a1b9a; /* Medium purple */
         }
-    
+        
         input[type="text"] {
-            width: calc(100% - 22px); /* Adjust width for select to match input width */
+            width: calc(100% - 20px); /* Adjust width to fit padding and border */
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #b39ddb; /* Light purple border */
             border-radius: 4px;
             box-sizing: border-box;
         }
-    
-        .radio-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-    
-        .radio-container input {
-            margin-right: 10px;
-        }
-    
+        
         input[type="submit"] {
             width: 100%;
             padding: 10px;
@@ -59,9 +56,37 @@
             font-size: 16px;
             cursor: pointer;
         }
-    
+        
         input[type="submit"]:hover {
             background-color: #4a148c; /* Dark purple on hover */
+        }
+        
+        #notification {
+            margin-bottom: 20px;
+            color: #d32f2f; /* Red for error messages */
+        }
+        
+        .link-container {
+            margin-bottom: 10px;
+        }
+        
+        .link-container a {
+            color: #6a1b9a; /* Medium purple */
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .link-container a:hover {
+            text-decoration: underline;
+        }
+        
+        #projects, #shared_projects {
+            width: 300px;
+            background-color: #ffffff; /* White background for the project lists */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -69,41 +94,32 @@
     <form method="post" action="/user_projects">
         <label for="project_name">Project Name:</label>
         <input type="text" id="project_name" name="project_name">
-    
         <input type="submit" name="save_project" value="Save Project">
-    
         <div id="notification">
             {% if notification %}
                 <p>{{ notification }}</p>
             {% endif %}
         </div>
-    
-        <label for="projects">Your Projects:</label>
-        <div id="projects">
-            {% for project in projects %}
-                {% if project.owner_user_id == current_user.id %}
-                    <div class="radio-container">
-                        <input type="radio" id="project{{ project.id }}" name="project" value="{{ project.id }}">
-                        <label for="project{{ project.id }}">{{ project.project_name }}</label>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    
-        <label for="shared_projects">Shared Projects:</label>
-        <div id="shared_projects">
-            {% for project in shared_projects %}
-                <div class="radio-container">
-                    <input type="radio" id="project{{ project.id }}" name="project" value="{{ project.id }}">
-                    <label for="project{{ project.id }}">{{ project.project_name }} (Shared by {{ project.owner.username }})</label>
-                </div>
-            {% endfor %}
-        </div>
-        
-        <input type="submit" name="go_to_project" value="Go to Project">
     </form>
     
+    <label for="projects">Your Projects:</label>
+    <div id="projects">
+        {% for project in projects %}
+            {% if project.owner_user_id == current_user.id %}
+                <div class="link-container">
+                    <a href="#" onclick="setProjectCookieAndRedirect('{{ project.project_name }}', '{{ url_for('set_project', project_id=project.id) }}')">{{ project.project_name }}</a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
     
-
+    <label for="shared_projects">Shared Projects:</label>
+    <div id="shared_projects">
+        {% for project in shared_projects %}
+            <div class="link-container">
+                <a href="#" onclick="setProjectCookieAndRedirect('{{ project.project_name }}', '{{ url_for('set_project', project_id=project.id) }}')">{{ project.project_name }} (Shared by {{ project.owner.username }})</a>
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
