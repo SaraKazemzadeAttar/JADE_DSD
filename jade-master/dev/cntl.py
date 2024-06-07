@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort, g
+from flask import Flask, request, send_from_directory, jsonify, make_response, redirect, url_for, render_template, abort, g,session
 from json import loads
 import model as m
 from model import *
@@ -32,13 +32,6 @@ def handle_post():
         response = value
 
     return response
-
-@app.route('/@<owner_id>/<project_name>', methods=['POST'])
-def set_project_id(owner_id, project_name):
-    project_id = find_proj_id(owner_id, project_name)
-    resp = make_response(redirect(url_for('jade.html')))
-    resp.set_cookie('project_id', project_id)
-    return resp
 
 @app.route('/', methods=['GET'])
 def index():
@@ -175,10 +168,13 @@ def set_project(project_id):
     project = get_project_by_project_id(project_id)
     if project:
         resp = make_response(redirect(url_for('jade', project_id=project_id)))
+        resp.set_cookie('project_id',str(project_id))
         resp.set_cookie('project_name', project.project_name)
         return resp
     else:
         return "Project not found.", 400
+
+
 
 @app.route('/jade.html')
 def jade():
