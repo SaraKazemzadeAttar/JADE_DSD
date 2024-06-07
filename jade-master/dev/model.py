@@ -81,28 +81,30 @@ class Project(db.Model):
     owner = db.relationship('User', foreign_keys=[owner_user_id], backref='owned_projects')
     subscriber = db.relationship('User', foreign_keys=[subscriber_user_id], backref='shared_projects')
     
-def get_value_of_project(project_id):
+def get_value_of_project(project_id , key):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             SELECT value
             FROM   project
             WHERE 
-                id = ?
-            ''', (project_id))
+                id = ? AND
+                key =?
+            ''', (project_id , key))
         print(cursor.fetchone())
         return cursor.fetchone()
     
 
     
-def update_value_of_project(project_id , value ):
+def update_value_of_project(project_id ,key, value ):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             UPDATE project
             SET
                 value = ?
+                , key = ?
             WHERE
                 id= ?
-            ''', (value, project_id))
+            ''', (value,key, project_id))
 
 def get_user(username):
     with borrowDbSession() as ss:

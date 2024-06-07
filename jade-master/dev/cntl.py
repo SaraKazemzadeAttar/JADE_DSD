@@ -18,16 +18,18 @@ def serve_static(path):
 @app.route('/', methods=['POST'])
 def handle_post():
     value = request.form.get('value')
+    key = request.form.get('key')
     project_id = request.cookies.get('project_id')
     
     if value is None:
-        if result := get_value_of_project(project_id):
+        if result := get_value_of_project(project_id, key):
             response = result[0]
         else:
             response = '{}'
     else:
         update_value_of_project(
-            project_id=project_id, 
+            project_id=project_id,
+            key= key,
             value=value)
         response = value
 
