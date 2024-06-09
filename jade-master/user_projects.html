@@ -98,8 +98,8 @@
     
     <label for="projects">Your Projects:</label>
     <div id="projects">
-        {% for project in projects %}
-            {% if project.owner_user_id == current_user.id %}
+        {% for project in owned_projects %}
+            {% if current_user.id == project.subscriber_user_id %}
                 <div class="link-container">
                     <a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
                         {{ project.project_name }}
@@ -112,6 +112,7 @@
     <label for="shared_projects">Shared Projects:</label>
     <div id="shared_projects">
         {% for project in shared_projects %}
+            {% if current_user.id != project.owner_user_id %}
             <div class="link-container">
                 <a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
                     {{ project.project_name }} 
@@ -120,6 +121,7 @@
                     )
                 </a>
             </div>
+            {% endif %}
         {% endfor %}
     </div>
 </body>
