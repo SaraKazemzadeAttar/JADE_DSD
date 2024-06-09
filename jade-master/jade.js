@@ -309,31 +309,14 @@ jade_defs.top_level = function(jade) {
             return cookie ? cookie.split('=')[1] : null;
         }
         
-        const cookieValue = getCookieValue('username');
-        const project_name = getCookieValue('project_name');
-        
+        const project_name = "main"
+        let edit = '/user/' + project_name;
 
-        if (project_name!=null){
-            let edit = '/user/' + cookieValue;
-            edit = '/user/' + cookieValue + '/' + project_name;
-            const mname = edit.split('.');
-            this.edit(mname[0]);
-            if (mname.length > 1) {
-                this.show(mname[1]);
-            }
-            }
-            else{
-            let edit = '/user/' + cookieValue;
-            edit = '/user/' + cookieValue ;
-            const mname = edit.split('.');
-            this.edit(mname[0]);
-            if (mname.length > 1) {
-                this.show(mname[1]);
-            }
-            }  
-
-
-        
+        const mname = edit.split('.');
+        this.edit(mname[0]);
+        if (mname.length > 1) {
+            this.show(mname[1]);
+        }
     };
 
     Jade.prototype.get_state = function() {

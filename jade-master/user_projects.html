@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Title</title>
-    <script>
-        function setProjectCookieAndRedirect(projectName, projectUrl) {
-            document.cookie = "project_name=" + projectName + "; path=/";
-            window.location.href = projectUrl;
-        }
-    </script>
     <style>
         body {
             background-color: #f3e5f5; /* Light lavender background */
@@ -107,7 +101,9 @@
         {% for project in projects %}
             {% if project.owner_user_id == current_user.id %}
                 <div class="link-container">
-                    <a href="#" onclick="setProjectCookieAndRedirect('{{ project.project_name }}', '{{ url_for('set_project', project_id=project.id) }}')">{{ project.project_name }}</a>
+                    <a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
+                        {{ project.project_name }}
+                    </a>
                 </div>
             {% endif %}
         {% endfor %}
@@ -117,7 +113,12 @@
     <div id="shared_projects">
         {% for project in shared_projects %}
             <div class="link-container">
-                <a href="#" onclick="setProjectCookieAndRedirect('{{ project.project_name }}', '{{ url_for('set_project', project_id=project.id) }}')">{{ project.project_name }} (Shared by {{ project.owner.username }})</a>
+                <a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
+                    {{ project.project_name }} 
+                    (Shared by 
+                    {{ project.owner.username }}
+                    )
+                </a>
             </div>
         {% endfor %}
     </div>

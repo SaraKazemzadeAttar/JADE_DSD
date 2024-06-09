@@ -75,10 +75,12 @@
         <label for="share_with">Share with:</label>
         <div id="share_with">
             {% for user in users %}
+                {% if user.username != your_username %}
                 <div class="checkbox-container">
                     <input type="checkbox" id="user_{{ user.username }}" name="share_with" value="{{ user.username }}">
                     <label for="user_{{ user.username }}">{{ user.username }}</label>
                 </div>
+                {% endif %}
             {% endfor %}
         </div>   
         <input type="submit" value="Share Project">
