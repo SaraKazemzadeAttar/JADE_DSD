@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Updated Tabs Pattern</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/core.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/main.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/carousel.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/code-snippet.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/guidance.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/paging.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/progress.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/slider.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/storyline.css'>
+<link rel='stylesheet' href='https://www.ancestrycdn.com/ui/1.2.0/css/timeline.css'><link rel="stylesheet" href="./dist.css">
+
+<script>
+// Function to get cookie value by name
+function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Get the username from cookie
+    var username = getCookie('username');
+
+    // Update the username in the HTML
+    document.addEventListener('DOMContentLoaded', function() {
+      if (username) {
+        document.getElementById('username').textContent = username;
+      }
+    });
+  </script>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!-- Header Content -->
+<div id="HeaderRegion"></div>
+
+<!--Page Header-->
+<div class="pageHeader bgDark bgColor1">
+  <!--Buttons goes here-->
+  <!-- <div aria-describedby="navigationPersonOptions" class="pageActions">		
+		<a class="ancBtn ancBtnIconOnly480 ancBtnL silver icon iconSearch" href="https://www.ancestry.com/family-tree/pt/RecordSearch.aspx?tid=32134167&amp;pid=18196469904&amp;ssrc=pt" onclick="setSearchWithHistoryUrl(this); personAnalyticsTrackClick('searchRecords');"><span class="hideVisually480">Search</span></a><button class="ancBtn ancBtnIconOnly480 ancBtnM silver icon iconTools iconAfter iconArrowSmallDownAfter researchToolsButton calloutTrigger" onclick="personAnalyticsTrackClick('researchMenuEntry');" type="button" aria-expanded="false"><span class="hideVisually480">Tools</span></button><button class="ancBtn ancBtnIconOnly480 ancBtnR silver icon iconEdit iconAfter iconArrowSmallDownAfter editToolsButton calloutTrigger" onclick="personAnalyticsTrackClick('editMenuEntry');" type="button" aria-expanded="false"><span class="hideVisually480">Edit</span></button>		
+		<div aria-label="breadcrumbs" role="navigation" class="pageCrumbs">
+		  <a class="ancBtn ancBtnIconOnly ancBtnL silver icon iconTreePedigree" href="https://www.ancestry.com/family-tree/tree/32134167/family?fpid=18196469904"></a><button class="ancBtn ancBtnM ancBtnIconOnly480 silver treePagesButton iconAfter iconArrowSmallDownAfter calloutTrigger" title="Dilworth Family Tree" type="button" aria-expanded="false"><span class="hideVisually480">Dilworth Family Tree</span></button><button class="ancBtn ancBtnR ancBtnIconOnly silver icon iconPersonFind treeOptions calloutTriggerNoArrow calloutTrigger" type="button" aria-expanded="false"><span class="hideVisually">Find person in tree</span></button>
+		</div>  
+</div> -->
+  <div class="personCardContainer" id="personCardContainer">
+    <div class="pageHeaderCenter" id="personCard">
+  	<div class="userCard userCardSize1 userCardStacked480 userCardInline noTopSpacing">
+	  	<div class="userCardImg userCardImgSquare icon iconMale" id="profileImage" tabindex="0" role="button"></div>	
+  		<div class="userCardContent">
+            <h1 class="userCardTitle" id="username">PlaceholderUsername</h1>
+		  	<div class="userCardEvents" aria-expanded="true">
+			  	<!-- <h2><span class="userCardEvent">Birth</span> <span class="userCardEventDetail factBirth"><span class="birthDate">1 JUN 1833</span> <span class="detailsBullet">•</span> <span class="birthPlace">Ledeberg, East Flanders, Belgium</span></span></h2> -->
+				  <!-- <h2 class="noTopSpacing"><span class="userCardEvent">Death</span> <span class="userCardEventDetail factDeath"><span class="deathDate">21 MARCH 1904</span> <span class="detailsBullet">•</span> <span class="deathPlace">Utrecht, Utrecht, Netherlands</span></span></h2> -->
+  			</div>			
+			  <div class="userCardInfo">
+				  <button id="rel_label" class="link relLabel" title="Show how we're related" type="button">Log Out</button>
+			  </div>			
+  		</div>
+	  </div>
+
+</div>
+  </div>
+</div>
+
+<div class="tabsWrapper">
+		<nav class="tabs tabs480" data-allow-urls="true" data-tab="pages" id="personTabs" role="tablist">
+			<a class="tab tabActive active" onclick="personAnalyticsTrackClick('lifeStoryTab');personAnalyticsChangePageName('lifestory');logPersonPageContentView('lifestory', '32134167', '18196469904', 'True', 'Owner');" href="https://www.ancestry.com/family-tree/person/tree/32134167/person/18196469904/story" id="tabStory" role="tab" aria-controls="tabContentStory" aria-selected="false" aria-expanded="false">Dashboard</a>
+			<!-- <a class="tab" onclick="personAnalyticsTrackClick('factsTab');personAnalyticsChangePageName('facts');logPersonPageContentView('facts', '32134167', '18196469904', 'True', 'Owner');" href="https://www.ancestry.com/family-tree/person/tree/32134167/person/18196469904/facts" id="tabFacts" role="tab" aria-controls="tabContentFacts" aria-selected="true" aria-expanded="true">About</a> -->
+			<!-- <a class="tab" onclick="setGalleryPubCurrentPage();personAnalyticsTrackClick('galleryTab');personAnalyticsChangePageName('gallery');logPersonPageContentView('gallery', '32134167', '18196469904', 'True', 'Owner');" href="https://www.ancestry.com/family-tree/person/tree/32134167/person/18196469904/gallery" id="tabGallery" role="tab" aria-controls="tabContentGallery" aria-selected="false" aria-expanded="false">Contact Us</a> -->
+			
+			
+			<!-- <a class="tab" onclick="setHintsWithHistoryUrl();personAnalyticsTrackClick('hintsTab');personAnalyticsChangePageName('hints');logPersonPageContentView('hints', '32134167', '18196469904', 'True', 'Owner');" href="https://www.ancestry.com/family-tree/person/tree/32134167/person/18196469904/hints" id="tabHints" role="tab" aria-controls="tabContentHints" aria-selected="false" aria-expanded="false">Logout</a> -->
+			
+			<h2 class="hideVisually">Navigation Research Tabs</h2>
+		</nav>
+	</div>
+
+<!-- Body -->
+<div class="page pageWidth1">
+  <section class="stack">
+    <div class="tabs tabsCon" data-tab="container-example-320" role="tablist">
+      <button class="tab tabActive" role="tab" type="button">My Projects <span class="badge"></span></button><button class="tab" role="tab" type="button">Shared Projects <span class="badge badgeColor3"></span></button><button class="tab" role="tab" type="button">Trusted Users <span class="badge badgeColor3"></span></button>
+      <button class="tab" role="tab" type="button">Accepted <span class="badge badgeColor3"></span></button>
+
+
+<div class="topSpacing" data-tab-group="container-example-320">
+	<div class="con tabContent" role="tabpanel">
+		<div id="projects">
+			{% for project in owned_projects %}
+				{% if current_user.id == project.subscriber_user_id %}
+					<div class="link-container">
+						<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
+							{{ project.project_name }}
+						</a>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	<div class="con tabContent" role="tabpanel">
+		<div id="shared_projects">
+			{% for project in shared_projects %}
+				{% if current_user.id != project.owner_user_id %}
+				<div class="link-container">
+					<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
+						{{ project.project_name }} 
+						(Shared by 
+						{{ project.owner.username }}
+						)
+					</a>
+				</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	<div class="con tabContent" role="tabpanel">
+		<p>Ignored hints over here</p>
+	</div>
+  	<div class="con tabContent" role="tabpanel">
+		<p>Accepted hints over here</p>
+	</div>
+
+</div>
+      
+    </div>
+  </section>
+  <!-- <section class="con">
+      <h1 class="conTitle">User Settings</h1>
+  <div class="ancGrid full480">
+	<div class="ancCol w33">
+		<div class="tabs tabsVertical" data-tab="vertical-tabs" role="tablist">
+			<button class="tab icon iconLeaf2" id="vertical-tabsTab0" role="tab" type="button">Username<span class="badge tabBadge">99+</span></button>
+			<button class="tab tabActive icon iconDocument" id="vertical-tabsTab1" role="tab" type="button">Password <span class="badge tabBadge">34</span></button>
+			<button class="tab icon iconCamera" id="vertical-tabsTab2" role="tab" type="button">Name <span class="badge tabBadge">34</span></button>
+      <button class="tab icon iconStory" id="vertical-tabsTab2" role="tab" type="button">Photo <span class="badge tabBadge">34</span></button>
+      <button class="tab icon iconTree" id="vertical-tabsTab2" role="tab" type="button">Member Trees <span class="badge tabBadge">345</span></button>
+		</div>
+	</div>
+	<div class="ancCol w66" data-tab-group="vertical-tabs">
+		<div class="tabContent" id="vertical-tabsTabPanel0" role="tabpanel">
+			<div class="con">
+				<div class="conHeader">
+					<h4 class="conTitle">Container #1</h4>
+				</div>
+				<div class="conBody">
+					<p>Container #1</p>
+				</div>
+			</div>
+		</div>
+		<div class="tabContent tabActive" id="vertical-tabsTabPanel1" role="tabpanel">
+			<div class="con">
+				<div class="conHeader">
+					<h4 class="conTitle">Container #2</h4>
+				</div>
+				<div class="conBody">
+					<p>Container #2</p>
+				</div>
+			</div>
+		</div>
+		<div class="tabContent" id="vertical-tabsTabPanel2" role="tabpanel">
+			<div class="con">
+				<div class="conHeader">
+					<h4 class="conTitle">Container #3</h4>
+				</div>
+				<div class="conBody">
+					<p>Container #3</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+  </section>
+  <section class="con">
+    <h2 class="conTitle">Connected Tabs</h2>
+    <div class="tabs tabsConnected" data-tab="container-example-480" role="tablist">
+	<button class="tab tabActive" id="container-example-480Tab0" role="tab" type="button">Tab #1</button><button class="tab" id="container-example-480Tab1" role="tab" type="button">Tab #2</button><button class="tab" id="container-example-480Tab2" role="tab" type="button">Tab #3</button>
+</div>
+<div data-tab-group="container-example-480">
+	<div class="tabContent tabActive" id="container-example-480TabPanel0" role="tabpanel">
+		<p>Content for tab #1</p>
+	</div>
+	<div class="tabContent" id="container-example-480TabPanel1" role="tabpanel">
+		<p>Content for tab #2</p>
+	</div>
+	<div class="tabContent" id="container-example-480TabPanel2" role="tabpanel">
+		<p>Content for tab #3</p>
+	</div>
+</div>
+Container level tabs (using HTML)
+  </section> -->
+</div>
+
+
+<!--  Footer -->
+<div id="FooterRegion"></div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/core.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/code-snippet.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/autogrow.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/carousel.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/date-validator.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/guidance.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/paging.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/slider.js'></script>
+<script src='https://www.ancestrycdn.com/ui/1.2.0/js/timeline.js'></script>
+<script src='https://c.mfcreative.com/lib/tgn/combo.ashx?x/lib/tgn/util/v1.1/ajaxmanager.js&x/lib/tgn/util/v1.1/resourcemanager.js'></script><script  src="./dist.js"></script>
+
+</body>
+</html>

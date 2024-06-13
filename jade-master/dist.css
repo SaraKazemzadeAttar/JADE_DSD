@@ -1,0 +1,112 @@
+.page {
+  padding: 20px 10px;
+}
+.conTitle {
+  font-weight: bold;
+  font-size: 24px;
+}
+.txt-lrg {
+  font-size: 20px;
+}
+.h2 {
+  font-size: 36px;
+  font-weight: bold;
+}
+html,
+#FooterRegion,
+footer {
+  margin-top: 0;
+  background: #ececec !important;
+}
+.tabsWrapper {
+  background-color: #dedcd6;
+  color: #534d46;
+  margin: 0 -10px -10px;
+  padding: 0 5px;
+}
+.tabsWrapper .tabs {
+  margin: 0 5px;
+  padding: 10px;
+}
+.personCardContainer {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.userCardSize1 h1.userCardTitle {
+  font-size: 30px;
+}
+.tab {
+  border: inherit;
+  border-radius: 0;
+  padding: 5px 20px;
+  color: #464e53;
+  margin-right: 0;
+  font-size: 16px;
+}
+.tab:hover {
+  border-bottom: 3px solid #464e53;
+}
+.tab.tabActive {
+  border-bottom: 3px solid #6ba410;
+  color: #346407;
+}
+.tabsConnected .tab.tabActive {
+  border-bottom: 1px solid #000;
+}
+.tabs.tabsConnected .tab {
+  border: 1px solid #000;
+  margin-right: -1px;
+}
+.tabsWrapper nav.tabs {
+  padding: 0;
+  padding-top: 5px;
+}
+.navMainMenu .navLink.navLink {
+  height: 33px;
+  border-bottom: 5px transparent;
+  border-radius: 0;
+  line-height: 25px;
+  font-weight: 400;
+}
+.navMainMenu .navLink.navLinkSelected {
+  border: inherit;
+  line-height: 27px;
+  font-weight: 600;
+  border-radius: 0;
+  border-bottom: 3px solid #6ba410;
+}
+.bgColor1 {
+  background: #636970;
+}
+body {
+  background: #f5f5f5;
+}
+.footerRegion {
+  background: #dedede;
+}
+.tabsWrapper {
+  background: #dedede;
+}
+.tabs.tabsVertical .tab.tabActive {
+  border-left: 5px solid #6ba410;
+  background: none;
+  color: #346407;
+  font-weight: bold;
+}
+.badge.badgeColor3 {
+  background: #636970;
+}
+.badge {
+  background: #6ba410;
+}
+.con {
+  border: 1px solid rgba(0,0,0,0.2);
+  box-shadow: none;
+}
+.tabsScrollable {
+  width: calc(100%);
+}
+.tabsOverflowBtn {
+  display: none;
+}

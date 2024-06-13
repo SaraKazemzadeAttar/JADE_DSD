@@ -79,6 +79,34 @@ def login():
 
 # ------ project
 
+
+
+
+
+
+# Route to load 'dist.html' and show user projects
+@app.route('/dist', methods=['GET'])
+def load_project():
+    username = request.cookies.get('username')
+    current_user = get_user(username)
+    if current_user:
+        projects = get_all_projects()
+        owned_projects = current_user.owned_projects
+        shared_projects = current_user.shared_projects
+
+        return render_template("dist.html", 
+                               current_user=current_user, 
+                               projects=projects, 
+                               owned_projects=owned_projects, 
+                               shared_projects=shared_projects,
+                              )
+    else:
+        return redirect(url_for('login'))
+
+
+
+
+
 @app.route('/share_project', methods=['GET'])
 def share_project():
     logged_in_username = request.cookies.get('username')
@@ -153,13 +181,23 @@ def new_project():
 
     return render_template('user_projects.html', notification=notification)
 
+# Route to set a specific project for viewing
 @app.route('/set_project/<project_name>/<int:owner_id>', methods=['GET'])
 def set_project(project_name, owner_id):
     proj = get_project(project_name, owner_id)
-    resp = make_response(redirect(url_for('jade')))
+    resp = make_response(redirect(url_for('jade')))  # Assuming 'jade' is a placeholder
     resp.set_cookie('project_id', str(proj.id))
     resp.set_cookie('project_name', project_name)  # Set project name in cookie
     return resp
+    
+
+# @app.route('/set_project/<project_name>/<int:owner_id>', methods=['GET'])
+# def set_project(project_name, owner_id):
+#     proj = get_project(project_name, owner_id)
+#     resp = make_response(redirect(url_for('jade')))
+#     resp.set_cookie('project_id', str(proj.id))
+#     resp.set_cookie('project_name', project_name)  # Set project name in cookie
+#     return resp
 
 
 # ------ entry point
