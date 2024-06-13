@@ -67,7 +67,7 @@ def login_POSTReq():
 
     user = get_user_by_password(username, password)
     if user:
-        resp = make_response(redirect(url_for('new_project')))
+        resp = make_response(redirect(url_for('load_project')))
         resp.set_cookie('username', username)
         return resp
     else:
@@ -79,13 +79,8 @@ def login():
 
 # ------ project
 
-
-
-
-
-
 # Route to load 'dist.html' and show user projects
-@app.route('/dist', methods=['GET'])
+@app.route('/dist', methods=['GET'], endpoint='load_project')
 def load_project():
     username = request.cookies.get('username')
     current_user = get_user(username)
@@ -103,10 +98,6 @@ def load_project():
     else:
         return redirect(url_for('login'))
 
-
-
-
-
 @app.route('/share_project', methods=['GET'])
 def share_project():
     logged_in_username = request.cookies.get('username')
@@ -120,7 +111,6 @@ def share_project():
 @app.route('/share_project', methods=['POST'])
 def share_project_POST():
     project_id = int(request.cookies.get('project_id'))
-    project_name = request.cookies.get('project_name')
     logged_in_username = request.cookies.get('username')
 
     owner = get_user(logged_in_username)
@@ -189,18 +179,7 @@ def set_project(project_name, owner_id):
     resp.set_cookie('project_id', str(proj.id))
     resp.set_cookie('project_name', project_name)  # Set project name in cookie
     return resp
-    
-
-# @app.route('/set_project/<project_name>/<int:owner_id>', methods=['GET'])
-# def set_project(project_name, owner_id):
-#     proj = get_project(project_name, owner_id)
-#     resp = make_response(redirect(url_for('jade')))
-#     resp.set_cookie('project_id', str(proj.id))
-#     resp.set_cookie('project_name', project_name)  # Set project name in cookie
-#     return resp
-
 
 # ------ entry point
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
