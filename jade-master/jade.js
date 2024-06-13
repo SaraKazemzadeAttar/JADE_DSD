@@ -304,19 +304,32 @@ jade_defs.top_level = function(jade) {
             jade.model.load_json(this.configuration.state,false);
         }
 
-        function getCookieValue(name) {
-            const cookie = document.cookie.split('; ').find(row => row.startsWith(name + '='));
-            return cookie ? cookie.split('=')[1] : null;
-        }
+        // function getCookieValue(name) {
+        //     const cookie = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+        //     return cookie ? cookie.split('=')[1] : null;
+        // }
+
+        var project_name = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('project_name'))
+        .split('=')[1];
+
+        var username = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('username'))
+        .split('=')[1];
         
-        const project_name = "main"
-        let edit = '/user/' + project_name;
+        //const project_name = "main"
+        let edit = '/user/' + username+'/'+project_name;
 
         const mname = edit.split('.');
         this.edit(mname[0]);
         if (mname.length > 1) {
             this.show(mname[1]);
         }
+
+
+
     };
 
     Jade.prototype.get_state = function() {
@@ -452,13 +465,18 @@ jade_defs.top_level = function(jade) {
         content.append(input);
 
         function edit() {
-            var cookieValue = document.cookie
+            var username = document.cookie
             .split('; ')
             .find(row => row.startsWith('username'))
             .split('=')[1];
+
+            var project_name = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('project_name'))
+            .split('=')[1];
             var name = $(input).val();
             // force module names to be a pathname, in /user by default
-            if (name[0] != '/') name = '/user/'+cookieValue+'/'+name;
+            if (name[0] != '/') name = '/user/'+username+'/'+project_name+'/'+name;
 
             function try_again(msg) {
                 $('#msg',content).text(msg);

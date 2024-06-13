@@ -92,6 +92,7 @@ def share_project():
 @app.route('/share_project', methods=['POST'])
 def share_project_POST():
     project_id = int(request.cookies.get('project_id'))
+    project_name = request.cookies.get('project_name')
     logged_in_username = request.cookies.get('username')
 
     owner = get_user(logged_in_username)
@@ -143,6 +144,7 @@ def new_project():
                 proj_id = create_empty_project(project_name, user.id)
                 resp = make_response(redirect(url_for('share_project')))
                 resp.set_cookie('project_id', str(proj_id))
+                resp.set_cookie('project_name', project_name) 
                 return resp
         else:
             return "User not found.", 400
@@ -156,6 +158,7 @@ def set_project(project_name, owner_id):
     proj = get_project(project_name, owner_id)
     resp = make_response(redirect(url_for('jade')))
     resp.set_cookie('project_id', str(proj.id))
+    resp.set_cookie('project_name', project_name)  # Set project name in cookie
     return resp
 
 
