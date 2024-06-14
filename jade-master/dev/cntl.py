@@ -84,6 +84,7 @@ def login():
 def load_project():
     username = request.cookies.get('username')
     current_user = get_user(username)
+
     if current_user:
         projects = get_all_projects()
         owned_projects = current_user.owned_projects
@@ -108,45 +109,33 @@ def share_project():
     users = all_users()
     return render_template('share_project.html', users=users, your_username=logged_in_username)
 
-# @app.route('/share_project', methods=['POST'])
-# def share_project_POST():
-#     project_id = int(request.cookies.get('project_id'))
-#     logged_in_username = request.cookies.get('username')
-
-#     owner = get_user(logged_in_username)
-#     if not owner:
-#         return redirect(url_for('login'))
-
-#     selected_usernames = request.form.getlist('share_with')
-#     subscribers = get_users(selected_usernames)
-#     proj = get_project_by_project_id(project_id)
-#     subscribe_to_proj(proj, subscribers)
-
-#     return redirect(url_for('jade'))
-
-#########################################
-@app.route('/share_project', methods=['GET', 'POST'])
+@app.route('/share_project', methods=['POST'])
 def user_projects():
-    if request.method == 'POST':
-        project_name = request.form.get('project_name')
-        user_name = request.form.get('username')
+    project_name = request.form.get('project_name')
+    user_name = request.cookies.get('username')
+    project_id = int(request.cookies.get('project_id'))
 
-        if project_name and user_name:
-            user = get_user(user_name)
+    if project_name and user_name:
+        user = get_user(user_name)
 
-            if user:
-                proj_id = create_empty_project(project_name, user['id'])
-                resp = make_response(redirect(url_for('jade')))
-                resp.set_cookie('project_id', str(proj_id))
-                resp.set_cookie('project_name', project_name)
-                return resp
-            else:
-                return "User not found.", 400
+        if user:
+            # Retrieve the project using the project_id from the cookies
+            proj = get_project_by_project_id(project_id)
+            if not proj:
+                return "Project not found.", 400
+
+            selected_usernames = request.form.getlist('share_with')
+            subscribers = get_users(selected_usernames)
+            proj = get_project_by_project_id(project_id)
+            subscribe_to_proj(proj, subscribers)
+
+            resp = make_response(redirect(url_for('jade')))
+            return resp
         else:
-            return "No project name or username provided.", 400
+            return "User not found.", 400
+    else:
+        return render_template('skip_project.html')
 
-    return render_template('skip_project.html')
-##############################################
 
 @app.route('/skip_project', methods=['GET'])
 def skip_project():

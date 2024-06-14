@@ -80,10 +80,10 @@
             <!-- Search results will be displayed here -->
         </div>
         
-        <div id="share_with">
+        <div id="share_with" style="display: none;">
             {% for user in users %}
                 {% if user.username != your_username %}
-                <div class="checkbox-container">
+                <div class="checkbox-container" style="display: none;">
                     <input type="checkbox" id="user_{{ user.id }}" name="share_with[]" value="{{ user.id }}">
                     <label for="user_{{ user.id }}">{{ user.username }}</label>
                 </div>
@@ -102,17 +102,22 @@
         function searchUsers() {
             var searchText = document.getElementById("user_search").value.trim().toLowerCase();
             var users = document.querySelectorAll("#share_with .checkbox-container");
-            
+            var searchResults = document.getElementById("search_results");
+
+            // Clear previous search results
+            searchResults.innerHTML = '';
+
             users.forEach(function(user) {
                 var username = user.querySelector("label").textContent.toLowerCase();
                 if (username.includes(searchText)) {
-                    user.style.display = "block";
-                } else {
-                    user.style.display = "none";
+                    var userClone = user.cloneNode(true);
+                    userClone.style.display = "block";
+                    searchResults.appendChild(userClone);
                 }
             });
         }
     </script>
 </body>
+
 
 </html>
