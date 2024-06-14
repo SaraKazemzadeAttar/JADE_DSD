@@ -71,26 +71,48 @@
 <body>
     <form method="post" action="{{ url_for('share_project') }}">
         <input type="hidden" name="project_name" value="{{ request.cookies.get('project_name') }}">
-    
-        <label for="share_with">Share with:</label>
+        
+        <label for="user_search">Share with:</label>
+        <input type="text" id="user_search" name="user_search" placeholder="Search users...">
+        <button type="button" onclick="searchUsers()">Search</button>
+        
+        <div id="search_results">
+            <!-- Search results will be displayed here -->
+        </div>
+        
         <div id="share_with">
             {% for user in users %}
                 {% if user.username != your_username %}
                 <div class="checkbox-container">
-                    <input type="checkbox" id="user_{{ user.username }}" name="share_with" value="{{ user.username }}">
-                    <label for="user_{{ user.username }}">{{ user.username }}</label>
+                    <input type="checkbox" id="user_{{ user.id }}" name="share_with[]" value="{{ user.id }}">
+                    <label for="user_{{ user.id }}">{{ user.username }}</label>
                 </div>
                 {% endif %}
             {% endfor %}
-        </div>   
-        <input type="submit" value="Share Project">
-
+        </div>
         
+        <input type="submit" value="Share Project">
     </form>
     
-
     <form method="get" action="{{ url_for('skip_project') }}">
         <input type="submit" value="Skip">
     </form>
+    
+    <script>
+        function searchUsers() {
+            var searchText = document.getElementById("user_search").value.trim().toLowerCase();
+            var users = document.querySelectorAll("#share_with .checkbox-container");
+            
+            users.forEach(function(user) {
+                var username = user.querySelector("label").textContent.toLowerCase();
+                if (username.includes(searchText)) {
+                    user.style.display = "block";
+                } else {
+                    user.style.display = "none";
+                }
+            });
+        }
+    </script>
 </body>
+
 </html>
