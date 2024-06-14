@@ -95,8 +95,11 @@ def update_value_of_project(project_id , value ):
 def get_user(username):
     return User.query.filter(User.username == username).first()
 
-def get_users(selected_usernames):
-    return User.query.filter(User.username.in_(selected_usernames)).all()
+
+def get_usernames_by_ids(selected_user_ids):
+    users = User.query.filter(User.id.in_(selected_user_ids)).all()
+    return [user.username for user in users]
+
 
 def create_user(username, password):
     with borrowDbSession() as ss:
@@ -134,12 +137,13 @@ def create_empty_project(project_name, owner_user_id):
         ss.flush() # save to get id
         return p.id
     
-def subscribe_to_proj(proj, subscribers):
+def subscribe_to_proj(proj, users):
     with borrowDbSession() as ss:
-        for subscriber in subscribers:
+        for subscriber in users:
             new_subscription = Project(
-                owner_user_id      = proj.owner.id,
+                owner_user_id      = proj.owner_user_id,
                 project_name       = proj.project_name,
                 subscriber_user_id = subscriber.id,
             )
             ss.add(new_subscription)
+        ss.commit()

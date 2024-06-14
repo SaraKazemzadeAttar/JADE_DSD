@@ -119,14 +119,12 @@ def user_projects():
         user = get_user(user_name)
 
         if user:
-            # Retrieve the project using the project_id from the cookies
             proj = get_project_by_project_id(project_id)
             if not proj:
                 return "Project not found.", 400
 
-            selected_usernames = request.form.getlist('share_with')
-            subscribers = get_users(selected_usernames)
-            proj = get_project_by_project_id(project_id)
+            selected_user_ids = request.form.getlist('share_with[]')
+            subscribers = get_usernames_by_ids(selected_user_ids)
             subscribe_to_proj(proj, subscribers)
 
             resp = make_response(redirect(url_for('jade')))
