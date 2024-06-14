@@ -89,22 +89,20 @@ function getCookie(name) {
       <button class="tab" role="tab" type="button">New Project <span class="badge badgeColor3"></span></button>
 
 
-
-<div class="topSpacing" data-tab-group="container-example-320">
-	<div class="con tabContent" role="tabpanel">
-		<div id="projects">
-			{% for project in owned_projects %}
-				{% if current_user.id == project.subscriber_user_id %}
-					<div class="link-container">
-						<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
-							{{ project.project_name }}
-						</a>
-					</div>
-				{% endif %}
-			{% endfor %}
-		</div>
+	<div class="topSpacing" data-tab-group="container-example-320">
+	<div class="con tabContent" role="tabpanel" id="projects">
+		{% for project in owned_projects %}
+		{% if current_user.id == project.subscriber_user_id %}
+			<div class="link-container">
+				<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
+					{{ project.project_name }}
+				</a>
+			</div>
+		{% endif %}
+		{% endfor %}
 	</div>
-	<div class="con tabContent" role="tabpanel">
+
+<div class="con tabContent" role="tabpanel">
 		<div id="shared_projects">
 			{% for project in shared_projects %}
 				{% if current_user.id != project.owner_user_id %}
