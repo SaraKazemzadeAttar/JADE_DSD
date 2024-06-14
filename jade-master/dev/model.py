@@ -134,9 +134,9 @@ def create_empty_project(project_name, owner_user_id):
         ss.flush() # save to get id
         return p.id
     
-def subscribe_to_proj(proj, users):
+def subscribe_to_proj(proj, subscribers):
     with borrowDbSession() as ss:
-        for subscriber in users:
+        for subscriber in subscribers:
             new_subscription = Project(
                 owner_user_id      = proj.owner.id,
                 project_name       = proj.project_name,
