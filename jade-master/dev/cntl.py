@@ -124,7 +124,7 @@ def user_projects():
                 return "Project not found.", 400
 
             selected_user_ids = request.form.getlist('share_with[]')
-            subscribers = get_usernames_by_ids(selected_user_ids)
+            subscribers = get_user_by_ids(selected_user_ids)
             subscribe_to_proj(proj, subscribers)
 
             resp = make_response(redirect(url_for('jade')))

@@ -96,9 +96,9 @@ def get_user(username):
     return User.query.filter(User.username == username).first()
 
 
-def get_usernames_by_ids(selected_user_ids):
+def get_user_by_ids(selected_user_ids):
     users = User.query.filter(User.id.in_(selected_user_ids)).all()
-    return [user.username for user in users]
+    return  users
 
 
 def create_user(username, password):
