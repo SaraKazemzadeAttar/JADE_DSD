@@ -130,9 +130,23 @@ function getCookie(name) {
 				{% endfor %}
 	</div>		
 	
-  	<div class="con tabContent" role="tabpanel">
-		<p>Accepted hints over here</p>
+	<div class="con tabContent" role="tabpanel">
+		<div class="container">
+			<h2>Request for Project</h2>
+			{% set displayed = False %}
+			{% for project in shared_projects %}
+				{% if current_user.id != project.owner_user_id and not displayed %}
+					<p><strong>User Name:</strong> (Shared by {{ project.owner.username }})</p>
+					<p><strong>Project Name That Share:</strong> {{ project.name }}</p>
+					{% set displayed = True %}
+				{% endif %}
+			{% endfor %}
+			<button class="button accept" onclick="handleAccept()">Accept</button>
+			<button class="button deny" onclick="handleDeny()">Deny</button>
+		</div>
 	</div>
+	
+
 	<div class="con tabContent" role="tabpanel">
 		<a href="/user_projects" >
 			<img alt="Make New Project">
@@ -225,6 +239,26 @@ Container level tabs (using HTML)
 <script src='https://www.ancestrycdn.com/ui/1.2.0/js/slider.js'></script>
 <script src='https://www.ancestrycdn.com/ui/1.2.0/js/timeline.js'></script>
 <script src='https://c.mfcreative.com/lib/tgn/combo.ashx?x/lib/tgn/util/v1.1/ajaxmanager.js&x/lib/tgn/util/v1.1/resourcemanager.js'></script><script  src="./dist.js"></script>
+
+
+<script>
+    function handleAccept() {
+        alert('Request Accepted');
+        // Add your accept logic here
+    }
+
+    function handleDeny() {
+        alert('Request Denied');
+        // Add your deny logic here
+    }
+
+    function logout() {
+        // Clear the cookie
+        document.cookie = 'username=; Max-Age=0; path=/; domain=' + location.host;
+        // Redirect to logout endpoint or home page
+        window.location.href = '/logout';
+    }
+</script>
 
 </body>
 </html>

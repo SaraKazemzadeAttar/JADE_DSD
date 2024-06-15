@@ -81,24 +81,42 @@ class Project(db.Model):
     owner = db.relationship('User', foreign_keys=[owner_user_id], backref='owned_projects')
     subscriber = db.relationship('User', foreign_keys=[subscriber_user_id], backref='shared_projects')
     
-
-def update_value_of_project(project_id , value ):
+def get_value_of_project(project_name, username, key):
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+            SELECT
+                value
+            FROM
+                project
+            JOIN
+                user
+            ON
+                user.id = project.owner_user_id
+            WHERE 
+                user.username = ? AND
+                project.key = ? AND
+                project.project_name = ? 
+            ''', (username, key, project_name))
+        return cursor.fetchone()
+    
+def update_value_of_project(value, username, key, project_name):
     with borrowDB() as (conn, cursor):
         cursor.execute('''
             UPDATE project
-            SET
+            SET 
+                key = ?,
                 value = ?
-            WHERE
-                id = ?
-            ''', (value, project_id))
+            FROM
+                user
+            WHERE 
+                user.id              = project.owner_user_id AND
+                user.username        = ?                     AND
+                project.project_name = ?
+            ''', (key, value, username, project_name))
 
 def get_user(username):
-    return User.query.filter(User.username == username).first()
-
-
-def get_user_by_ids(selected_user_ids):
-    users = User.query.filter(User.id.in_(selected_user_ids)).all()
-    return  users
+    with borrowDbSession() as ss:
+        return User.query.filter_by(username = username).first()
 
 
 def create_user(username, password):
@@ -106,44 +124,38 @@ def create_user(username, password):
         ss.add(User(username=username, password=password))
         
 def get_user_by_password(username, password):
-    return User.query.filter(
-        User.username == username,
-        User.password == password,
-        ).first()
+    with borrowDB() as (conn, cursor):
+        cursor.execute('''
+                SELECT * 
+                FROM
+                    user 
+                WHERE 
+                    username = ? AND 
+                    password = ?
+                ''', (username, password))
 
-def all_users():
-    return User.query.all()   
+        return  cursor.fetchone()
+    
+def fetch_users(logged_in_username) :
+    with borrowDbSession() as ss:
+        return User.query.filter(User.username != logged_in_username).all()   
 
 def get_all_projects():
-    return Project.query.all()
+    with borrowDbSession() as ss:
+        return Project.query.all()
          
 def get_project(proj_name, owner_id):
-    return Project.query.filter_by(
-        project_name       = proj_name, 
-        owner_user_id      = owner_id,
-        subscriber_user_id = owner_id).first()
+    with borrowDbSession() as ss:
+       return Project.query.filter_by(project_name=proj_name, owner_user_id= owner_id).first()
    
 def get_project_by_project_id(p_id):
-    return Project.query.get(p_id)
-    
-def create_empty_project(project_name, owner_user_id):
     with borrowDbSession() as ss:
-        p = Project(
-            project_name=project_name, 
-            owner_user_id=owner_user_id, 
-            subscriber_user_id = owner_user_id,
-            value = '{}')
-        ss.add(p)
-        ss.flush() # save to get id
-        return p.id
+        return Project.query.get(p_id)
     
-def subscribe_to_proj(proj, users):
+def create_project(project_name, owner_user_id, key , value):
+        with borrowDbSession() as ss:
+            ss.add(Project(project_name=project_name, owner_user_id=owner_user_id , key = key , value = value))
+        
+def create_project_with_subscribers(project_name, owner_user_id, subscriber_user_id, key , value):
     with borrowDbSession() as ss:
-        for subscriber in users:
-            new_subscription = Project(
-                owner_user_id      = proj.owner_user_id,
-                project_name       = proj.project_name,
-                subscriber_user_id = subscriber.id,
-            )
-            ss.add(new_subscription)
-        ss.commit()
+        ss.add(Project(project_name=project_name, owner_user_id=owner_user_id, subscriber_user_id=subscriber_user_id ,  key = key , value = value))
