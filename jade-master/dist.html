@@ -84,7 +84,7 @@ function getCookie(name) {
 <div class="page pageWidth1">
   <section class="stack">
     <div class="tabs tabsCon" data-tab="container-example-320" role="tablist">
-      <button class="tab tabActive" role="tab" type="button">My Projects <span class="badge"></span></button><button class="tab" role="tab" type="button">Shared Projects <span class="badge badgeColor3"></span></button><button class="tab" role="tab" type="button">Trusted Users <span class="badge badgeColor3"></span></button>
+      <button class="tab tabActive" role="tab" type="button">My Projects <span class="badge"></span></button><button class="tab" role="tab" type="button">Shared Projects <span class="badge badgeColor3"></span></button><button class="tab" role="tab" type="button">SHARE PROJECT <span class="badge badgeColor3"></span></button>
       <button class="tab" role="tab" type="button">Accepted <span class="badge badgeColor3"></span></button>
       <button class="tab" role="tab" type="button">New Project <span class="badge badgeColor3"></span></button>
 
@@ -120,7 +120,17 @@ function getCookie(name) {
 	</div>
 	<div class="con tabContent" role="tabpanel">
 		<p>Ignored hints over here</p>
-	</div>
+				{% for project in owned_projects %}
+				{% if current_user.id == project.subscriber_user_id %}
+					<div class="link-container">
+						<a href="/share_project" >
+							{{ project.project_name }}
+						  </a>
+					</div>
+				{% endif %}
+				{% endfor %}
+	</div>		
+	
   	<div class="con tabContent" role="tabpanel">
 		<p>Accepted hints over here</p>
 	</div>
