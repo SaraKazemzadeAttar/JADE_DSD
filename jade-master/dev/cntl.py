@@ -134,7 +134,7 @@ def user_projects():
     else:
         return render_template('skip_project.html')
 
-
+    
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
     return redirect(url_for('jade'))

@@ -132,12 +132,12 @@ function getCookie(name) {
 	
 	<div class="con tabContent" role="tabpanel">
 		<div class="container">
-			<h2>Request for Project</h2>
+			<h2>Request for Sharing Project</h2>
 			{% set displayed = False %}
 			{% for project in shared_projects %}
 				{% if current_user.id != project.owner_user_id and not displayed %}
 					<p><strong>User Name:</strong> (Shared by {{ project.owner.username }})</p>
-					<p><strong>Project Name That Share:</strong> {{ project.name }}</p>
+					<p><strong>Project Name That Share:</strong> {{ project.project_name }}</p>
 					{% set displayed = True %}
 				{% endif %}
 			{% endfor %}
