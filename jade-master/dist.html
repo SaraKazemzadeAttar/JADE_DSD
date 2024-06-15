@@ -242,24 +242,70 @@ Container level tabs (using HTML)
 
 
 <script>
-    function handleAccept() {
+    function handleAccept(projectName) {
         alert('Request Accepted');
-        // Add your accept logic here
+        
+        // Send AJAX request to backend
+        fetch('/accept_project_request', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ project_name: projectName }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle success if needed
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
-    function handleDeny() {
+    function handleDeny(projectName) {
         alert('Request Denied');
-        // Add your deny logic here
+        
+        // Prompt user to provide project name again
+        var newProjectName = prompt('Enter project name again:');
+        
+        // Send AJAX request to backend with the new project name
+        if (newProjectName) {
+            fetch('/deny_project_request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ project_name: newProjectName }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle success if needed
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     }
 
-	function logout() {
-    // Clear the username cookie
-    document.cookie = 'username=; Max-Age=0; path=/; domain=' + location.host;
-    // Redirect to logout endpoint or home page
-    window.location.href = '/login'; // Replace '/login' with your actual login endpoint
-}
-
-
+	
+    function logout() {
+        // Clear the username cookie
+        document.cookie = 'username=; Max-Age=0; path=/; domain=' + location.host;
+        // Redirect to logout endpoint or home page
+        window.location.href = '/login'; // Replace '/login' with your actual login endpoint
+    }
 </script>
 
 </body>

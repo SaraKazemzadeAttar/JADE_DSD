@@ -1,4 +1,4 @@
-from flask import request, send_from_directory, make_response, redirect, url_for, render_template, abort
+from flask import request, send_from_directory, make_response, redirect, url_for, render_template, abort,jsonify
 from model import *
 from main import app
 
@@ -42,6 +42,29 @@ def jade():
     else:
         return redirect(url_for('index'))
 
+@app.route('/accept_project_request', methods=['POST'])
+def accept_project_request():
+    data = request.get_json()
+    project_name = data.get('project_name')
+
+    # Process the project_name as needed, e.g., save it to the database
+    # Here, you can implement your logic to handle the acceptance
+
+    return jsonify({'message': 'Project request accepted successfully'})  # Return a response as JSON
+
+# Route for denying project request
+@app.route('/deny_project_request', methods=['POST'])
+def deny_project_request():
+    data = request.get_json()
+    project_name = data.get('project_name')
+
+    # Handle denial of project request
+    # Prompt user to provide project name again or handle as needed
+    if project_name:
+        # Handle the denial logic here, for example, notify the sender or log the event
+        return jsonify({'message': 'Project request denied. Please provide project name again.'})
+    else:
+        return jsonify({'error': 'Project name not provided in request'}), 400
 # ------ authentication
 
 @app.route('/signup', methods=['POST'])
