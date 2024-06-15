@@ -186,10 +186,13 @@ def new_project():
 @app.route('/set_project/<project_name>/<int:owner_id>', methods=['GET'])
 def set_project(project_name, owner_id):
     proj = get_project(project_name, owner_id)
-    resp = make_response(redirect(url_for('jade')))  # Assuming 'jade' is a placeholder
-    resp.set_cookie('project_id', str(proj.id))
-    resp.set_cookie('project_name', project_name)  # Set project name in cookie
-    return resp
+    if proj:
+        resp = make_response(redirect(url_for('jade')))  # Assuming 'jade' is a placeholder
+        resp.set_cookie('project_id', str(proj.id))
+        resp.set_cookie('project_name', project_name)  # Set project name in cookie
+        return resp
+    else:
+        return "Project not found.", 404
 
 # ------ entry point
 if __name__ == '__main__':
