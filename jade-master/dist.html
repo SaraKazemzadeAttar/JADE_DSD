@@ -58,7 +58,7 @@ function getCookie(name) {
 				  <!-- <h2 class="noTopSpacing"><span class="userCardEvent">Death</span> <span class="userCardEventDetail factDeath"><span class="deathDate">21 MARCH 1904</span> <span class="detailsBullet">•</span> <span class="deathPlace">Utrecht, Utrecht, Netherlands</span></span></h2> -->
   			</div>			
 			  <div class="userCardInfo">
-				  <button id="rel_label" class="link relLabel" title="Show how we're related" type="button">Log Out</button>
+				<button id="rel_label" class="link relLabel" title="Show how we're related" type="button" onclick="logout()">Log Out</button>
 			  </div>			
   		</div>
 	  </div>
@@ -252,12 +252,14 @@ Container level tabs (using HTML)
         // Add your deny logic here
     }
 
-    function logout() {
-        // Clear the cookie
-        document.cookie = 'username=; Max-Age=0; path=/; domain=' + location.host;
-        // Redirect to logout endpoint or home page
-        window.location.href = '/logout';
-    }
+	function logout() {
+    // Clear the username cookie
+    document.cookie = 'username=; Max-Age=0; path=/; domain=' + location.host;
+    // Redirect to logout endpoint or home page
+    window.location.href = '/login'; // Replace '/login' with your actual login endpoint
+}
+
+
 </script>
 
 </body>
