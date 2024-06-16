@@ -1,6 +1,7 @@
 from flask import request, send_from_directory, make_response, redirect, url_for, render_template, abort,jsonify
 from model import *
 from main import app
+from flask import abort 
 
 # Web routes --------------------------------------------
 
@@ -41,30 +42,37 @@ def jade():
         return render_template('jade.html')
     else:
         return redirect(url_for('index'))
+    
+
+
 
 @app.route('/accept_project_request', methods=['POST'])
 def accept_project_request():
+    if request.content_type != 'application/json':
+        return jsonify({"error": "Unsupported Media Type. Content-Type must be 'application/json'"}), 415
+    
+    # You can handle the empty JSON body here if needed
     data = request.get_json()
-    project_name = data.get('project_name')
+    
+    # Perform your logic here
 
-    # Process the project_name as needed, e.g., save it to the database
-    # Here, you can implement your logic to handle the acceptance
+    return jsonify(True), 200
+    
 
-    return jsonify({'message': 'Project request accepted successfully'})  # Return a response as JSON
 
 # Route for denying project request
 @app.route('/deny_project_request', methods=['POST'])
 def deny_project_request():
+    if request.content_type != 'application/json':
+        return jsonify({"error": "Unsupported Media Type. Content-Type must be 'application/json'"}), 415
+    
+    # You can handle the empty JSON body here if needed
     data = request.get_json()
-    project_name = data.get('project_name')
+    
+    # Perform your logic here
 
-    # Handle denial of project request
-    # Prompt user to provide project name again or handle as needed
-    if project_name:
-        # Handle the denial logic here, for example, notify the sender or log the event
-        return jsonify({'message': 'Project request denied. Please provide project name again.'})
-    else:
-        return jsonify({'error': 'Project name not provided in request'}), 400
+    return jsonify(True), 200
+
 # ------ authentication
 
 @app.route('/signup', methods=['POST'])
@@ -132,11 +140,22 @@ def share_project():
     users = all_users()
     return render_template('share_project.html', users=users, your_username=logged_in_username)
 
+from flask import request, jsonify
+
 @app.route('/share_project', methods=['POST'])
 def user_projects():
     project_name = request.form.get('project_name')
     user_name = request.cookies.get('username')
-    project_id = int(request.cookies.get('project_id'))
+    
+    project_id = request.cookies.get('project_id', None)
+    
+    if project_id is not None:
+        try:
+            project_id = int(project_id)  
+        except ValueError:
+            return "Invalid project ID.", 400  
+    else:
+        return "Project ID not provided.", 400  
 
     if project_name and user_name:
         user = get_user(user_name)
@@ -146,18 +165,21 @@ def user_projects():
             if not proj:
                 return "Project not found.", 400
 
-            selected_user_ids = request.form.getlist('share_with[]')
-            subscribers = get_user_by_ids(selected_user_ids)
-            subscribe_to_proj(proj, subscribers)
+            if accept_project_request():
+                selected_user_ids = request.form.getlist('share_with[]')
+                subscribers = get_user_by_ids(selected_user_ids)
+                subscribe_to_proj(proj, subscribers)
 
-            resp = make_response(redirect(url_for('jade')))
-            return resp
+                resp = make_response(redirect(url_for('jade')))
+                return resp
+            elif deny_project_request():
+                subscribe_to_proj(proj, None)
         else:
             return "User not found.", 400
     else:
         return render_template('skip_project.html')
 
-    
+
 @app.route('/skip_project', methods=['GET'])
 def skip_project():
     return redirect(url_for('jade'))

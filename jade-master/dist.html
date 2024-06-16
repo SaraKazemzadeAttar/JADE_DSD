@@ -139,10 +139,10 @@ function getCookie(name) {
 					<p><strong>User Name:</strong> (Shared by {{ project.owner.username }})</p>
 					<p><strong>Project Name That Share:</strong> {{ project.project_name }}</p>
 					{% set displayed = True %}
+					<button class="button accept" onclick="handleAccept()">Accept</button>
+					<button class="button deny" onclick="handleDeny()">Deny</button>
 				{% endif %}
 			{% endfor %}
-			<button class="button accept" onclick="handleAccept()">Accept</button>
-			<button class="button deny" onclick="handleDeny()">Deny</button>
 		</div>
 	</div>
 	
@@ -242,63 +242,60 @@ Container level tabs (using HTML)
 
 
 <script>
-    function handleAccept(projectName) {
-        alert('Request Accepted');
-        
-        // Send AJAX request to backend
-        fetch('/accept_project_request', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ project_name: projectName }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Handle success if needed
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    function handleDeny(projectName) {
-        alert('Request Denied');
-        
-        // Prompt user to provide project name again
-        var newProjectName = prompt('Enter project name again:');
-        
-        // Send AJAX request to backend with the new project name
-        if (newProjectName) {
-            fetch('/deny_project_request', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ project_name: newProjectName }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Handle success if needed
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+function handleAccept() {
+    alert('Request Accepted');
+    
+    // Send AJAX request to backend
+    fetch('/accept_project_request', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),  // Send an empty object as the body
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    }
+        return response.json();
+    })
+    .then(data => {
+        // Handle success if needed
+        console.log('Success:', data);
+        // Optionally update UI or do other operations on success
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
+    function handleDeny() {
+		alert('Request Accepted');
+    
+    // Send AJAX request to backend
+    fetch('/accept_project_request', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),  // Send an empty object as the body
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle success if needed
+        console.log('Success:', data);
+        // Optionally update UI or do other operations on success
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+        
+    }
 	
     function logout() {
         // Clear the username cookie
@@ -306,6 +303,7 @@ Container level tabs (using HTML)
         // Redirect to logout endpoint or home page
         window.location.href = '/login'; // Replace '/login' with your actual login endpoint
     }
+	
 </script>
 
 </body>
