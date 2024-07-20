@@ -69,6 +69,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -93,9 +95,9 @@ def get_user_by_ids(selected_user_ids):
     return  users
 
 
-def create_user(username, password):
+def create_user(username, password,email):
     with borrowDbSession() as ss:
-        ss.add(User(username=username, password=password))
+        ss.add(User(username=username, password=password, email=email))
         
 def get_user_by_password(username, password):
     return User.query.filter(

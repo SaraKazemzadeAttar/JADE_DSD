@@ -44,47 +44,20 @@ def jade():
         return redirect(url_for('index'))
     
 
-
-
-@app.route('/accept_project_request', methods=['POST'])
-def accept_project_request():
-    if request.content_type != 'application/json':
-        return jsonify({"error": "Unsupported Media Type. Content-Type must be 'application/json'"}), 415
-    
-    # You can handle the empty JSON body here if needed
-    data = request.get_json()
-    
-    # Perform your logic here
-
-    return jsonify(True), 200
-    
-
-
-# Route for denying project request
-@app.route('/deny_project_request', methods=['POST'])
-def deny_project_request():
-    if request.content_type != 'application/json':
-        return jsonify({"error": "Unsupported Media Type. Content-Type must be 'application/json'"}), 415
-    
-    # You can handle the empty JSON body here if needed
-    data = request.get_json()
-    
-    # Perform your logic here
-
-    return jsonify(True), 200
-
 # ------ authentication
 
 @app.route('/signup', methods=['POST'])
 def signup_POSTReq():
     username = request.form.get('username')
     password = request.form.get('password')
+    email = request.form.get('email')
+
 
     existing_user = get_user(username)
     if existing_user:
         return "Username already exists!"
     else:
-        create_user(username, password)
+        create_user(username, password, email)
         return redirect(url_for('login'))
 
 @app.route('/signup', methods=['GET'])
@@ -165,15 +138,13 @@ def user_projects():
             if not proj:
                 return "Project not found.", 400
 
-            if accept_project_request():
-                selected_user_ids = request.form.getlist('share_with[]')
-                subscribers = get_user_by_ids(selected_user_ids)
-                subscribe_to_proj(proj, subscribers)
+            selected_user_ids = request.form.getlist('share_with[]')
+            subscribers = get_user_by_ids(selected_user_ids)
+            subscribe_to_proj(proj, subscribers)
 
-                resp = make_response(redirect(url_for('jade')))
-                return resp
-            elif deny_project_request():
-                subscribe_to_proj(proj, None)
+            resp = make_response(redirect(url_for('jade')))
+            return resp
+            
         else:
             return "User not found.", 400
     else:

@@ -242,60 +242,6 @@ Container level tabs (using HTML)
 
 
 <script>
-function handleAccept() {
-    alert('Request Accepted');
-    
-    // Send AJAX request to backend
-    fetch('/accept_project_request', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),  // Send an empty object as the body
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Handle success if needed
-        console.log('Success:', data);
-        // Optionally update UI or do other operations on success
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-    function handleDeny() {
-		alert('Request Accepted');
-    
-    // Send AJAX request to backend
-    fetch('/accept_project_request', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),  // Send an empty object as the body
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Handle success if needed
-        console.log('Success:', data);
-        // Optionally update UI or do other operations on success
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-        
-    }
 	
     function logout() {
         // Clear the username cookie
