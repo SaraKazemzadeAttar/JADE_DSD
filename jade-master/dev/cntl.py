@@ -2,6 +2,8 @@ from flask import request, send_from_directory, make_response, redirect, url_for
 from model import *
 from main import app
 from flask import abort 
+from otp import *
+
 
 # Web routes --------------------------------------------
 
@@ -45,24 +47,83 @@ def jade():
     
 
 # ------ authentication
-
 @app.route('/signup', methods=['POST'])
 def signup_POSTReq():
     username = request.form.get('username')
     password = request.form.get('password')
     email = request.form.get('email')
 
-
+    # Check if the user already exists
     existing_user = get_user(username)
     if existing_user:
         return "Username already exists!"
-    else:
-        create_user(username, password, email)
-        return redirect(url_for('login'))
+
+    # Generate and send OTP code
+    otp_code = send_code(email)
+    
+    # Set cookies
+    resp = make_response(redirect(url_for('otp')))
+    resp.set_cookie('username', username)
+    resp.set_cookie('password', password)
+    resp.set_cookie('email', email)
+    resp.set_cookie('otp_code',otp_code)
+    
+    return resp
 
 @app.route('/signup', methods=['GET'])
 def signup():
     return render_template('signup.html')
+
+
+def otp_code_isvalid( code):
+    # Check if OTP code is valid for the given username
+    otp_code = int(request.cookies.get('otp_code'))
+
+    print(type(otp_code))
+    print(otp_code)
+    print(type(code))
+
+
+    if otp_code == code:
+        print("222222222222222222222222222222222222222222222")
+        return True
+    else:
+        print("3333333333333333333333333333333333333333333333")
+        return False
+    
+@app.route('/otp', methods=['GET', 'POST'])
+def otp():
+    if request.method == 'POST':
+        username = request.cookies.get('username')
+        password = request.cookies.get('password')
+        email = request.cookies.get('email')
+        otp_code = request.cookies.get('otp_code')
+
+        otp1 = request.form.get('otp1')
+        otp2 = request.form.get('otp2')
+        otp3 = request.form.get('otp3')
+        otp4 = request.form.get('otp4')
+
+        # Combine the OTP parts
+        code = int(f"{otp1}{otp2}{otp3}{otp4}")
+      
+
+        existing_user = get_user(username)
+        if existing_user:
+            return "Username already exists!"
+        else:
+            print("0000000000000000000000000000")
+            if otp_code_isvalid(code):
+                print("1111111111111111111111111")
+                create_user(username, password, email, otp_code)        
+                return redirect(url_for('login'))
+            else : 
+                return "Invalid OTP code, Try again!"
+
+
+    # If the request method is GET
+    return render_template('otp.html')
+
 
 @app.route('/login', methods=['POST'])
 def login_POSTReq():
@@ -113,7 +174,6 @@ def share_project():
     users = all_users()
     return render_template('share_project.html', users=users, your_username=logged_in_username)
 
-from flask import request, jsonify
 
 @app.route('/share_project', methods=['POST'])
 def user_projects():

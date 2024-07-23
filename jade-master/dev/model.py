@@ -5,7 +5,7 @@
 # python3.10 -m flask --app model db upgrade
 
 # imports --------------------------------------------
-
+from flask import request
 from flask import g 
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.session import Session
@@ -70,6 +70,7 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+    otp_code =  db.Column(db.Integer)
 
 
 class Project(db.Model):
@@ -95,9 +96,9 @@ def get_user_by_ids(selected_user_ids):
     return  users
 
 
-def create_user(username, password,email):
+def create_user(username, password,email,otp_code):
     with borrowDbSession() as ss:
-        ss.add(User(username=username, password=password, email=email))
+        ss.add(User(username=username, password=password, email=email,otp_code=otp_code))
         
 def get_user_by_password(username, password):
     return User.query.filter(
@@ -171,3 +172,5 @@ def set_accept(proj):
             WHERE
                 id = ?
             ''', (1, project_id))
+        
+
