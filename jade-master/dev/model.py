@@ -62,7 +62,6 @@ def borrowDbSession():
         finally:
             session.commit()
 
-
 # database structures --------------------------------------
 
 class User(db.Model):
@@ -71,30 +70,29 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     otp_code =  db.Column(db.Integer)
-
-
+    
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    owner_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is sharing
-    subscriber_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # a person who is shared
-    project_name = db.Column(db.String(100), nullable=False)
-    key = db.Column(db.Text, nullable=True)
+    project_name = db.Column(db.String(100),nullable = False)
+    owner_user_id = db.Column(db.ForeignKey('user.id'),nullable = True)
     value = db.Column(db.Text, nullable=True)
-    isAccepted = db.Column(db.Boolean, nullable=True )
-
-    owner = db.relationship('User', foreign_keys=[owner_user_id], backref='owned_projects')
-    subscriber = db.relationship('User', foreign_keys=[subscriber_user_id], backref='shared_projects')
     
-
-
+    owner = db.relationship('User', foreign_keys=[owner_user_id], backref='owned_projects')
+    
+class Subscription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.ForeignKey('project.id'),nullable = False)
+    subscriber_user_id = db.Column(db.ForeignKey('user.id'),nullable = True) 
+    
+    subscriber = db.relationship('User', foreign_keys=[subscriber_user_id], backref='shared_projects')
+    proj_id= db.relationship('Project', foreign_keys=[project_id], backref='proj_id')
+    
 def get_user(username):
     return User.query.filter(User.username == username).first()
-
 
 def get_user_by_ids(selected_user_ids):
     users = User.query.filter(User.id.in_(selected_user_ids)).all()
     return  users
-
 
 def create_user(username, password,email,otp_code):
     with borrowDbSession() as ss:
@@ -121,13 +119,11 @@ def update_value_of_project(project_id , value ):
         
 def get_all_projects():
     return Project.query.all()
-         
+
 def get_project(proj_name, owner_id):
     return Project.query.filter_by(
         project_name       = proj_name, 
-        owner_user_id      = owner_id,
-        subscriber_user_id = owner_id,
-        isAccepted         =  None ).first()
+        owner_user_id      = owner_id).first()
    
 def get_project_by_project_id(p_id):
     return Project.query.get(p_id)
@@ -136,41 +132,30 @@ def create_empty_project(project_name, owner_user_id):
     with borrowDbSession() as ss:
         p = Project(
             project_name=project_name, 
-            owner_user_id=owner_user_id, 
-            subscriber_user_id = owner_user_id,
-            value = '{}' ,
-            isAccepted = None)
+            owner_user_id=owner_user_id,
+            value = '{}')
         ss.add(p)
         ss.flush() # save to get id
+        return p.id
+
+def create_empty_project(project_name, owner_user_id):
+    with borrowDbSession() as ss:
+        p = Project(
+            project_name=project_name, 
+            owner_user_id=owner_user_id, 
+            value = '{}')
+        ss.add(p)
+        ss.flush() 
         return p.id
     
 def subscribe_to_proj(proj, users):
     with borrowDbSession() as ss:
         for subscriber in users:
-            new_subscription = Project(
-                owner_user_id      = proj.owner_user_id,
-                project_name       = proj.project_name,
-                subscriber_user_id = subscriber.id, 
-                isAccepted         = False
+            new_subscription = Subscription(
+                project_id         = proj.id,
+                subscriber_user_id = subscriber.id
             )
-            ss.add(new_subscription)
+        ss.add(new_subscription)
+        ss.flush()
         ss.commit()
-
-def is_requsted(proj):
-    with borrowDbSession() as ss:
-        if proj.is_Accepted == False:
-            return True
         
-        
-def set_accept(proj):
-    project_id = proj.id
-    with borrowDB() as (conn, cursor):
-        cursor.execute('''
-            UPDATE project
-            SET
-                is_Accepted = ?
-            WHERE
-                id = ?
-            ''', (1, project_id))
-        
-

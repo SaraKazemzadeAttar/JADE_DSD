@@ -152,14 +152,14 @@ def load_project():
 
     if current_user:
         projects = get_all_projects()
-        owned_projects = current_user.owned_projects
+        owned_projects= current_user.owned_projects
         shared_projects = current_user.shared_projects
 
         return render_template("dist.html", 
                                current_user=current_user, 
                                projects=projects, 
-                               owned_projects=owned_projects, 
-                               shared_projects=shared_projects,
+                               owned_projects = owned_projects, 
+                               shared_project = shared_projects 
                               )
     else:
         return redirect(url_for('login'))
@@ -225,10 +225,10 @@ def load_proj():
         owned_projects = current_user.owned_projects
         shared_projects = current_user.shared_projects
         return render_template("user_projects.html", 
-                               current_user=current_user, 
-                               projects=projects, 
-                               owned_projects=owned_projects, 
-                               shared_projects=shared_projects)
+                               current_user   = current_user, 
+                               projects       = projects, 
+                               owned_projects  = owned_projects, 
+                               shared_projects = shared_projects)
     else:
         return redirect(url_for('login'))
 
