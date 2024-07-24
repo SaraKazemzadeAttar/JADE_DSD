@@ -79,56 +79,56 @@ function getCookie(name) {
 			<h2 class="hideVisually">Navigation Research Tabs</h2>
 		</nav>
 	</div>
-
-<!-- Body -->
-<div class="page pageWidth1">
-  <section class="stack">
-    <div class="tabs tabsCon" data-tab="container-example-320" role="tablist">
+	
+	<!-- Body -->
+	<div class="page pageWidth1">
+		<section class="stack">
+			<div class="tabs tabsCon" data-tab="container-example-320" role="tablist">
+				<button class="tab" role="tab" type="button">New Project <span class="badge badgeColor3"></span></button>
       <button class="tab tabActive" role="tab" type="button">My Projects <span class="badge"></span></button><button class="tab" role="tab" type="button">Shared Projects <span class="badge badgeColor3"></span></button><button class="tab" role="tab" type="button">SHARE PROJECT <span class="badge badgeColor3"></span></button>
       <button class="tab" role="tab" type="button">Notification <span class="badge badgeColor3"></span></button>
-      <button class="tab" role="tab" type="button">New Project <span class="badge badgeColor3"></span></button>
 
-
+	  
 	<div class="topSpacing" data-tab-group="container-example-320">
-	<div class="con tabContent" role="tabpanel" id="projects">
-		{% for project in owned_projects %}
-		{% if current_user.id == project.subscriber_user_id %}
+		<div class="con tabContent" role="tabpanel">
+			<a href="/user_projects">
+				<img alt="Make New Project">
+			</a>
+		</div>
+		
+		<div class="con tabContent" role="tabpanel" id="projects">
+			{% for project in current_user.owned_projects %}
 			<div class="link-container">
 				<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
 					{{ project.project_name }}
 				</a>
 			</div>
-		{% endif %}
-		{% endfor %}
-	</div>
-
-<div class="con tabContent" role="tabpanel">
-		<div id="shared_projects">
-			{% for project in shared_projects %}
-				{% if current_user.id != project.owner_user_id %}
-				<div class="link-container">
-					<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
-						{{ project.project_name }} 
-						(Shared by 
-						{{ project.owner.username }}
-						)
-					</a>
-				</div>
-				{% endif %}
 			{% endfor %}
 		</div>
-	</div>
-	<div class="con tabContent" role="tabpanel">
-				{% for project in owned_projects %}
-				{% if current_user.id == project.subscriber_user_id %}
-					<div class="link-container">
-						<a href="/share_project" >
-							{{ project.project_name }}
-						  </a>
-					</div>
-				{% endif %}
+		
+		<div class="con tabContent" role="tabpanel">
+			<div id="shared_projects">
+				{% for subscription in current_user.shared_projects %}
+				<div class="link-container">
+					<a href="{{ url_for('set_project', project_name=subscription.proj_id.project_name, owner_id=subscription.proj_id.owner.id) }}">
+						{{ subscription.proj_id.project_name }}
+						(Shared by {{ subscription.proj_id.owner.username }})
+					</a>
+				</div>
 				{% endfor %}
-	</div>		
+			</div>
+		</div>
+		
+		<div class="con tabContent" role="tabpanel">
+			{% for project in current_user.owned_projects %}
+			<div class="link-container">
+				<a href="/share_project">
+					{{ project.project_name }}
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+		
 	
 	<div class="con tabContent" role="tabpanel">
 		<div class="container">
@@ -147,11 +147,6 @@ function getCookie(name) {
 	</div>
 	
 
-	<div class="con tabContent" role="tabpanel">
-		<a href="/user_projects" >
-			<img alt="Make New Project">
-		</a>
-	</div>
 
 
 </div>

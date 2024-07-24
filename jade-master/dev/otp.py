@@ -10,7 +10,7 @@ def generate_random_code():
 
 def send_code(email):
     msg = MIMEMultipart()
-    msg['From'] = "shahedap.footballfantasy@gmail.com"
+    msg['From'] ="jade.shaheduni@gmail.com"
     msg['To'] =email
     msg['Subject'] = "Validification"
     
@@ -20,8 +20,10 @@ def send_code(email):
     
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    smtp_username = "shahedap.footballfantasy@gmail.com"
-    smtp_password = "vfecuirpkbwojjkj"
+    # smtp_username = "shahedap.footballfantasy@gmail.com"
+    # smtp_password = "vfecuirpkbwojjkj"
+    smtp_username = "jade.shaheduni@gmail.com"
+    smtp_password = "qqtwdphrytmmigmo"
     
     server = smtplib.SMTP(smtp_server, smtp_port)
     server.starttls()

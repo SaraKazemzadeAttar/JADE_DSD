@@ -3,12 +3,20 @@ from model import *
 from main import app
 from flask import abort 
 from otp import *
+from cryptography.fernet import Fernet
 
 
-# Web routes --------------------------------------------
+#key --------------------------------------------
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+def encrypt_data(data):
+    return cipher_suite.encrypt(data.encode()).decode()
+
+def decrypt_data(data):
+    return cipher_suite.decrypt(data.encode()).decode()
 
 # ------ base
-
 @app.route('/<path:path>', methods=['GET'])
 def serve_static(path):
     if not path:
@@ -45,7 +53,6 @@ def jade():
     else:
         return redirect(url_for('index'))
     
-
 # ------ authentication
 @app.route('/signup', methods=['POST'])
 def signup_POSTReq():
@@ -53,20 +60,19 @@ def signup_POSTReq():
     password = request.form.get('password')
     email = request.form.get('email')
 
-    # Check if the user already exists
     existing_user = get_user(username)
     if existing_user:
         return "Username already exists!"
 
-    # Generate and send OTP code
     otp_code = send_code(email)
     
-    # Set cookies
+    encrypted_otp_code = encrypt_data(str(otp_code))
+    
     resp = make_response(redirect(url_for('otp')))
     resp.set_cookie('username', username)
     resp.set_cookie('password', password)
     resp.set_cookie('email', email)
-    resp.set_cookie('otp_code',otp_code)
+    resp.set_cookie('otp_code', encrypted_otp_code)
     
     return resp
 
@@ -74,22 +80,15 @@ def signup_POSTReq():
 def signup():
     return render_template('signup.html')
 
-
-def otp_code_isvalid( code):
-    # Check if OTP code is valid for the given username
-    otp_code = int(request.cookies.get('otp_code'))
-
-    print(type(otp_code))
-    print(otp_code)
-    print(type(code))
-
+def otp_code_isvalid(code):
+    encrypted_otp_code = request.cookies.get('otp_code')
+    otp_code = int(decrypt_data(encrypted_otp_code))
 
     if otp_code == code:
-        print("222222222222222222222222222222222222222222222")
         return True
     else:
-        print("3333333333333333333333333333333333333333333333")
         return False
+
     
 @app.route('/otp', methods=['GET', 'POST'])
 def otp():
@@ -97,31 +96,24 @@ def otp():
         username = request.cookies.get('username')
         password = request.cookies.get('password')
         email = request.cookies.get('email')
-        otp_code = request.cookies.get('otp_code')
 
         otp1 = request.form.get('otp1')
         otp2 = request.form.get('otp2')
         otp3 = request.form.get('otp3')
         otp4 = request.form.get('otp4')
 
-        # Combine the OTP parts
         code = int(f"{otp1}{otp2}{otp3}{otp4}")
       
-
         existing_user = get_user(username)
         if existing_user:
             return "Username already exists!"
         else:
-            print("0000000000000000000000000000")
             if otp_code_isvalid(code):
-                print("1111111111111111111111111")
-                create_user(username, password, email, otp_code)        
+                create_user(username, password, email, code)        
                 return redirect(url_for('login'))
-            else : 
+            else: 
                 return "Invalid OTP code, Try again!"
 
-
-    # If the request method is GET
     return render_template('otp.html')
 
 
@@ -142,9 +134,9 @@ def login_POSTReq():
 def login():
     return render_template('login.html')
 
+
 # ------ project
 
-# Route to load 'dist.html' and show user projects
 @app.route('/dist', methods=['GET'], endpoint='load_project')
 def load_project():
     username = request.cookies.get('username')
@@ -159,7 +151,7 @@ def load_project():
                                current_user=current_user, 
                                projects=projects, 
                                owned_projects = owned_projects, 
-                               shared_project = shared_projects 
+                               shared_project = shared_projects, 
                               )
     else:
         return redirect(url_for('login'))
