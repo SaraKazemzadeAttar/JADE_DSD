@@ -1,67 +1,82 @@
 .page {
   padding: 20px 10px;
 }
+
 .conTitle {
   font-weight: bold;
   font-size: 24px;
 }
+
 .txt-lrg {
   font-size: 20px;
 }
+
 .h2 {
   font-size: 36px;
   font-weight: bold;
 }
+
 html,
 #FooterRegion,
 footer {
   margin-top: 0;
-  background: #e6e6fa !important; /* Lavender */
+  background: #d3d3d3 !important; /* LightSteelBlue */
 }
+
 .tabsWrapper {
-  background-color: #d8bfd8; /* Thistle */
-  color: #4b0082; /* Indigo */
+  background-color: #87CEFA; /* LightSkyBlue */
+  color: #778899; /* LightSlateGray */
   margin: 0 -10px -10px;
   padding: 0 5px;
 }
+
 .tabsWrapper .tabs {
   margin: 0 5px;
   padding: 10px;
 }
+
 .personCardContainer {
   margin-top: 10px;
   margin-bottom: 20px;
   text-align: center;
 }
+
 .userCardSize1 h1.userCardTitle {
   font-size: 30px;
 }
+
 .tab {
   border: inherit;
   border-radius: 0;
   padding: 5px 20px;
-  color: #4b0082; /* Indigo */
+  color: #778899; /* LightSlateGray */
   margin-right: 0;
   font-size: 16px;
 }
+
 .tab:hover {
-  border-bottom: 3px solid #4b0082; /* Indigo */
+  border-bottom: 3px solid #778899; /* LightSlateGray */
 }
+
 .tab.tabActive {
-  border-bottom: 3px solid #9400d3; /* Dark Violet */
-  color: #800080; /* Purple */
+  border-bottom: 3px solid #00008b; /* SkyBlue */
+  color: #00008b; /* SkyBlue */
 }
+
 .tabsConnected .tab.tabActive {
   border-bottom: 1px solid #000;
 }
+
 .tabs.tabsConnected .tab {
   border: 1px solid #000;
   margin-right: -1px;
 }
+
 .tabsWrapper nav.tabs {
   padding: 0;
   padding-top: 5px;
 }
+
 .navMainMenu .navLink.navLink {
   height: 33px;
   border-bottom: 5px transparent;
@@ -69,44 +84,55 @@ footer {
   line-height: 25px;
   font-weight: 400;
 }
+
 .navMainMenu .navLink.navLinkSelected {
   border: inherit;
   line-height: 27px;
   font-weight: 600;
   border-radius: 0;
-  border-bottom: 3px solid #9400d3; /* Dark Violet */
+  border-bottom: 3px solid #00008b; /* SkyBlue */
 }
+
 .bgColor1 {
-  background: #9400d3; /* Medium Purple */
+  background: #00008b; /* SkyBlue */
 }
+
 body {
-  background: #f8f8ff; /* Ghost White */
+  background: #d3d3d3; /* LightSteelBlue */
 }
+
 .footerRegion {
-  background: #d8bfd8; /* Thistle */
+  background: #87CEFA; /* LightSkyBlue */
 }
+
 .tabsWrapper {
-  background: #d8bfd8; /* Thistle */
+  background: #87CEFA; /* LightSkyBlue */
 }
+
 .tabs.tabsVertical .tab.tabActive {
-  border-left: 5px solid #9400d3; /* Dark Violet */
+  border-left: 5px solid #00008b; /* SkyBlue */
   background: none;
-  color: #800080; /* Purple */
+  color: #00008b; /* SkyBlue */
   font-weight: bold;
 }
+
 .badge.badgeColor3 {
-  background: #9370db; /* Medium Purple */
+  background: #00008b; /* SkyBlue */
 }
+
 .badge {
-  background: #9400d3; /* Dark Violet */
+  background: #00008b; /* SkyBlue */
 }
+
 .con {
   border: 1px solid rgba(0,0,0,0.2);
   box-shadow: none;
 }
+
 .tabsScrollable {
   width: calc(100%);
 }
+
 .tabsOverflowBtn {
   display: none;
 }

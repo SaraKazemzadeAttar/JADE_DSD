@@ -6,7 +6,7 @@
         <title>Share Your Project</title>
         <style>
             body {
-                background-color: #f3e5f5; /* Light lavender background */
+                background-color: #d3d3d3; /* Light gray background */
                 font-family: Arial, sans-serif;
                 display: flex;
                 flex-direction: column;
@@ -15,7 +15,7 @@
                 height: 100vh;
                 margin: 0;
             }
-    
+        
             form {
                 background-color: #ffffff; /* White background for the form */
                 padding: 20px;
@@ -25,44 +25,44 @@
                 margin-bottom: 20px; /* Add margin bottom for spacing between forms */
                 box-sizing: border-box;
             }
-    
+        
             label {
                 display: block;
                 margin-bottom: 8px;
-                color: #6a1b9a; /* Medium purple */
+                color: #00008b; /* Dark blue */
                 font-weight: bold;
             }
-    
+        
             input[type="text"],
             input[type="password"],
             select {
                 width: 100%;
                 padding: 10px;
                 margin-bottom: 20px;
-                border: 1px solid #b39ddb; /* Light purple border */
+                border: 1px solid #87CEFA; /* Light sky blue border */
                 border-radius: 4px;
                 box-sizing: border-box;
             }
-    
+        
             input[type="text"]::placeholder {
-                color: #b39ddb; /* Light purple placeholder */
+                color: #87CEFA; /* Light sky blue placeholder */
             }
-    
+        
             .checkbox-container {
                 display: flex;
                 align-items: center;
                 margin-bottom: 10px;
             }
-    
+        
             .checkbox-container input {
                 margin-right: 10px;
             }
-    
+        
             input[type="submit"],
             button {
                 width: 100%;
                 padding: 10px;
-                background-color: #7b1fa2; /* Medium purple */
+                background-color: #00008b; /* Dark blue */
                 border: none;
                 border-radius: 4px;
                 color: white;
@@ -70,20 +70,21 @@
                 cursor: pointer;
                 margin-top: 10px;
             }
-    
+        
             input[type="submit"]:hover,
             button:hover {
-                background-color: #4a148c; /* Dark purple on hover */
+                background-color: #00008b; /* Keep dark blue on hover for consistency */
             }
-    
+        
             #search_results {
                 margin-top: 10px;
             }
-    
+        
             .hidden {
                 display: none;
             }
         </style>
+        
     </head>
     <body>
         <form method="post" action="{{ url_for('share_project') }}">
