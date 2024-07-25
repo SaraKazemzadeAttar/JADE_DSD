@@ -136,3 +136,21 @@ body {
 .tabsOverflowBtn {
   display: none;
 }
+
+#searchInputShared,
+#searchInput,
+#searchInputShare {
+    border: 2px solid #87CEFA;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    outline: none; 
+}
+
+#searchInputShared:focus,
+#searchInput:focus,
+#searchInputShare:focus {
+    border-color: #00008b; 
+    box-shadow: 0 0 8px 2px rgba(0, 0, 139, 0.5);
+}

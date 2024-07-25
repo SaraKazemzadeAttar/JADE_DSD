@@ -31,7 +31,62 @@ function getCookie(name) {
         document.getElementById('username').textContent = username;
       }
     });
-  </script>
+
+function searchProjects() {
+    var input, filter, container, items, a, i, txtValue;
+    input = document.getElementById('searchInput');
+    filter = input.value.toUpperCase();
+    container = document.getElementById('projects');
+    items = container.getElementsByClassName('project-item');
+    
+    for (i = 0; i < items.length; i++) {
+        a = items[i].getElementsByTagName("a")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            items[i].style.display = "";
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+}
+
+function searchSharedProjects() {
+    var input, filter, container, items, a, i, txtValue;
+    input = document.getElementById('searchInputShared');
+    filter = input.value.toUpperCase();
+    container = document.getElementById('shared_projects');
+    items = container.getElementsByClassName('project-item');
+    
+    for (i = 0; i < items.length; i++) {
+        a = items[i].getElementsByTagName("a")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            items[i].style.display = "";
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+}
+
+function searchShareProjects() {
+    var input, filter, container, items, a, i, txtValue;
+    input = document.getElementById('searchInputShare');
+    filter = input.value.toUpperCase();
+    container = document.querySelector('div[role="tabpanel"]:nth-of-type(4)'); // Adjust this selector if necessary
+    items = container.getElementsByClassName('project-item');
+    
+    for (i = 0; i < items.length; i++) {
+        a = items[i].getElementsByTagName("a")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            items[i].style.display = "";
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+}
+</script>
+
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -97,8 +152,9 @@ function getCookie(name) {
 		</div>
 		
 		<div class="con tabContent" role="tabpanel" id="projects">
+			<input type="text" id="searchInput" onkeyup="searchProjects()" placeholder="Search for projects">
 			{% for project in current_user.owned_projects %}
-			<div class="link-container">
+			<div class="link-container project-item">
 				<a href="{{ url_for('set_project', project_name=project.project_name, owner_id=project.owner.id) }}">
 					{{ project.project_name }}
 				</a>
@@ -108,8 +164,9 @@ function getCookie(name) {
 		
 		<div class="con tabContent" role="tabpanel">
 			<div id="shared_projects">
+				<input type="text" id="searchInputShared" onkeyup="searchSharedProjects()" placeholder="Search for shared projects">
 				{% for subscription in current_user.shared_projects %}
-				<div class="link-container">
+				<div class="link-container project-item">
 					<a href="{{ url_for('set_project', project_name=subscription.proj_id.project_name, owner_id=subscription.proj_id.owner.id) }}">
 						{{ subscription.proj_id.project_name }}
 						(Shared by {{ subscription.proj_id.owner.username }})
@@ -119,9 +176,11 @@ function getCookie(name) {
 			</div>
 		</div>
 		
+		
 		<div class="con tabContent" role="tabpanel">
+			<input type="text" id="searchInputShare" onkeyup="searchShareProjects()" placeholder="Search for share projects">
 			{% for project in current_user.owned_projects %}
-			<div class="link-container">
+			<div class="link-container project-item">
 				<a href="/share_project">
 					{{ project.project_name }}
 				</a>
@@ -129,7 +188,6 @@ function getCookie(name) {
 			{% endfor %}
 		</div>
 		
-	
 	<div class="con tabContent" role="tabpanel">
 		<div class="container">
 			<h2>Request for Sharing Project</h2>
@@ -145,9 +203,6 @@ function getCookie(name) {
 			{% endfor %}
 		</div>
 	</div>
-	
-
-
 
 </div>
       
