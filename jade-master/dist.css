@@ -16,11 +16,11 @@ html,
 #FooterRegion,
 footer {
   margin-top: 0;
-  background: #ececec !important;
+  background: #e6e6fa !important; /* Lavender */
 }
 .tabsWrapper {
-  background-color: #dedcd6;
-  color: #534d46;
+  background-color: #d8bfd8; /* Thistle */
+  color: #4b0082; /* Indigo */
   margin: 0 -10px -10px;
   padding: 0 5px;
 }
@@ -40,16 +40,16 @@ footer {
   border: inherit;
   border-radius: 0;
   padding: 5px 20px;
-  color: #464e53;
+  color: #4b0082; /* Indigo */
   margin-right: 0;
   font-size: 16px;
 }
 .tab:hover {
-  border-bottom: 3px solid #464e53;
+  border-bottom: 3px solid #4b0082; /* Indigo */
 }
 .tab.tabActive {
-  border-bottom: 3px solid #6ba410;
-  color: #346407;
+  border-bottom: 3px solid #9400d3; /* Dark Violet */
+  color: #800080; /* Purple */
 }
 .tabsConnected .tab.tabActive {
   border-bottom: 1px solid #000;
@@ -74,31 +74,31 @@ footer {
   line-height: 27px;
   font-weight: 600;
   border-radius: 0;
-  border-bottom: 3px solid #6ba410;
+  border-bottom: 3px solid #9400d3; /* Dark Violet */
 }
 .bgColor1 {
-  background: #636970;
+  background: #9400d3; /* Medium Purple */
 }
 body {
-  background: #f5f5f5;
+  background: #f8f8ff; /* Ghost White */
 }
 .footerRegion {
-  background: #dedede;
+  background: #d8bfd8; /* Thistle */
 }
 .tabsWrapper {
-  background: #dedede;
+  background: #d8bfd8; /* Thistle */
 }
 .tabs.tabsVertical .tab.tabActive {
-  border-left: 5px solid #6ba410;
+  border-left: 5px solid #9400d3; /* Dark Violet */
   background: none;
-  color: #346407;
+  color: #800080; /* Purple */
   font-weight: bold;
 }
 .badge.badgeColor3 {
-  background: #636970;
+  background: #9370db; /* Medium Purple */
 }
 .badge {
-  background: #6ba410;
+  background: #9400d3; /* Dark Violet */
 }
 .con {
   border: 1px solid rgba(0,0,0,0.2);
