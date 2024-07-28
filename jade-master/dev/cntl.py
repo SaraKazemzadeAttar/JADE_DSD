@@ -3,18 +3,7 @@ from model import *
 from main import app
 from flask import abort 
 from otp import *
-from cryptography.fernet import Fernet
 
-
-#key --------------------------------------------
-key = Fernet.generate_key()
-cipher_suite = Fernet(key)
-
-def encrypt_data(data):
-    return cipher_suite.encrypt(data.encode()).decode()
-
-def decrypt_data(data):
-    return cipher_suite.decrypt(data.encode()).decode()
 
 # ------ base
 @app.route('/<path:path>', methods=['GET'])
@@ -66,13 +55,12 @@ def signup_POSTReq():
 
     otp_code = send_code(email)
     
-    encrypted_otp_code = encrypt_data(str(otp_code))
     
     resp = make_response(redirect(url_for('otp')))
     resp.set_cookie('username', username)
     resp.set_cookie('password', password)
     resp.set_cookie('email', email)
-    resp.set_cookie('otp_code', encrypted_otp_code)
+    resp.set_cookie('otp_code', otp_code)
     
     return resp
 
@@ -82,8 +70,9 @@ def signup():
 
 def otp_code_isvalid(code):
     encrypted_otp_code = request.cookies.get('otp_code')
-    otp_code = int(decrypt_data(encrypted_otp_code))
-
+    print(encrypted_otp_code)
+    otp_code = int((encrypted_otp_code))
+    print(otp_code)
     if otp_code == code:
         return True
     else:
@@ -136,25 +125,6 @@ def login():
 
 
 # ------ project
-
-# @app.route('/dist', methods=['GET'], endpoint='load_project')
-# def load_project():
-#     username = request.cookies.get('username')
-#     current_user = get_user(username)
-
-#     if current_user:
-#         projects = get_all_projects()
-#         owned_projects= current_user.owned_projects
-#         shared_projects = current_user.shared_projects
-
-#         return render_template("dist.html", 
-#                                current_user=current_user, 
-#                                projects=projects, 
-#                                owned_projects = owned_projects, 
-#                                shared_project = shared_projects, 
-#                               )
-#     else:
-#         return redirect(url_for('login'))
 
 @app.route('/dist', methods=['GET'], endpoint='load_project')
 def load_project():

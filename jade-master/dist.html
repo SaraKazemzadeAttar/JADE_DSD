@@ -175,8 +175,7 @@ function searchShareProjects() {
 				{% endfor %}
 			</div>
 		</div>
-		
-		
+			
 		<div class="con tabContent" role="tabpanel">
 			<input type="text" id="searchInputShare" onkeyup="searchShareProjects()" placeholder="Search for share projects">
 			{% for project in current_user.owned_projects %}
@@ -208,72 +207,8 @@ function searchShareProjects() {
       
     </div>
   </section>
-  <!-- <section class="con">
-      <h1 class="conTitle">User Settings</h1>
-  <div class="ancGrid full480">
-	<div class="ancCol w33">
-		<div class="tabs tabsVertical" data-tab="vertical-tabs" role="tablist">
-			<button class="tab icon iconLeaf2" id="vertical-tabsTab0" role="tab" type="button">Username<span class="badge tabBadge">99+</span></button>
-			<button class="tab tabActive icon iconDocument" id="vertical-tabsTab1" role="tab" type="button">Password <span class="badge tabBadge">34</span></button>
-			<button class="tab icon iconCamera" id="vertical-tabsTab2" role="tab" type="button">Name <span class="badge tabBadge">34</span></button>
-      <button class="tab icon iconStory" id="vertical-tabsTab2" role="tab" type="button">Photo <span class="badge tabBadge">34</span></button>
-      <button class="tab icon iconTree" id="vertical-tabsTab2" role="tab" type="button">Member Trees <span class="badge tabBadge">345</span></button>
-		</div>
-	</div>
-	<div class="ancCol w66" data-tab-group="vertical-tabs">
-		<div class="tabContent" id="vertical-tabsTabPanel0" role="tabpanel">
-			<div class="con">
-				<div class="conHeader">
-					<h4 class="conTitle">Container #1</h4>
-				</div>
-				<div class="conBody">
-					<p>Container #1</p>
-				</div>
-			</div>
-		</div>
-		<div class="tabContent tabActive" id="vertical-tabsTabPanel1" role="tabpanel">
-			<div class="con">
-				<div class="conHeader">
-					<h4 class="conTitle">Container #2</h4>
-				</div>
-				<div class="conBody">
-					<p>Container #2</p>
-				</div>
-			</div>
-		</div>
-		<div class="tabContent" id="vertical-tabsTabPanel2" role="tabpanel">
-			<div class="con">
-				<div class="conHeader">
-					<h4 class="conTitle">Container #3</h4>
-				</div>
-				<div class="conBody">
-					<p>Container #3</p>
-				</div>
-			</div>
-		</div>
-	</div>
+ 
 </div>
-  </section>
-  <section class="con">
-    <h2 class="conTitle">Connected Tabs</h2>
-    <div class="tabs tabsConnected" data-tab="container-example-480" role="tablist">
-	<button class="tab tabActive" id="container-example-480Tab0" role="tab" type="button">Tab #1</button><button class="tab" id="container-example-480Tab1" role="tab" type="button">Tab #2</button><button class="tab" id="container-example-480Tab2" role="tab" type="button">Tab #3</button>
-</div>
-<div data-tab-group="container-example-480">
-	<div class="tabContent tabActive" id="container-example-480TabPanel0" role="tabpanel">
-		<p>Content for tab #1</p>
-	</div>
-	<div class="tabContent" id="container-example-480TabPanel1" role="tabpanel">
-		<p>Content for tab #2</p>
-	</div>
-	<div class="tabContent" id="container-example-480TabPanel2" role="tabpanel">
-		<p>Content for tab #3</p>
-	</div>
-</div>
-Container level tabs (using HTML)
-  </section> -->
-</div>
-
 
 <!--  Footer -->
 <div id="FooterRegion"></div>

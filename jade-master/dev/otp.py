@@ -20,8 +20,6 @@ def send_code(email):
     
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    # smtp_username = "shahedap.footballfantasy@gmail.com"
-    # smtp_password = "vfecuirpkbwojjkj"
     smtp_username = "jade.shaheduni@gmail.com"
     smtp_password = "qqtwdphrytmmigmo"
     
