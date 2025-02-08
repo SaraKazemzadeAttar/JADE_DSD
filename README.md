@@ -1,7 +1,7 @@
 # **Jade Circuit Simulator - Extended Version**
 
 ## **Project Overview**
-This project is an extension of [Jade](https://github.com/6004x/jade), a circuit simulation tool. As part of our **Digital System Design** course, we cloned the original repository and enhanced it with new features to improve usability and functionality.
+This project is an extension of [Jade](https://github.com/6004x/jade), a circuit simulation tool. As part of our **Digital System Design** subject, we cloned the original repository and enhanced it with new features to improve usability and functionality.
 
 Jade allows users to configure simulation tools and part libraries for different assignments. The default configuration (`jade_standalone.html`) displays all available tools and libraries. Users can also load specific libraries with schematics, icons, and (read-only) tests that serve as templates and test jigs for design problems.
 
